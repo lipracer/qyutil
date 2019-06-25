@@ -456,8 +456,8 @@ void GetHostDnsServerIP(std::vector<std::string>& _dns_servers) {
     __system_property_get("net.dns2", buf2);
     _dns_servers.push_back(std::string(buf1));  // 主DNS
     _dns_servers.push_back(std::string(buf2));  // 备DNS
-    xinfo2(TSF"main dns: %0", std::string(buf1).c_str());
-    xinfo2(TSF"sub dns: %0", std::string(buf2).c_str());
+    LOGI("main dns: %0", std::string(buf1).c_str());
+    LOGI("sub dns: %0", std::string(buf2).c_str());
 }
 
 #elif defined __APPLE__ 
@@ -531,7 +531,7 @@ void GetHostDnsServerIP(std::vector<std::string>& _dns_servers) {
     ULONG ulOutBufLen = sizeof(fi);
 
     if (::GetNetworkParams(&fi, &ulOutBufLen) != ERROR_SUCCESS) {
-        xinfo2(TSF" GetNetworkParams() failed");
+        LOGI(TSF" GetNetworkParams() failed");
         return;
     }
 
