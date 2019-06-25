@@ -2,6 +2,19 @@
     "files.associations": {
         "stdexcept": "cpp",
         "string": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "iostream": "cpp",
+        "__locale": "cpp",
+        "atomic": "cpp",
+        "codecvt": "cpp",
+        "cstddef": "cpp",
+        "ios": "cpp",
+        "limits": "cpp",
+        "locale": "cpp",
+        "memory": "cpp",
+        "new": "cpp",
+        "type_traits": "cpp",
+        "iosfwd": "cpp",
+        "iomanip": "cpp"
     }
 }
