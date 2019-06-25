@@ -7,8 +7,12 @@ LOCAL_MODULE := qyutil
 #NDK_OUT := ../../build/android
 #NDK_APP_DST_DIR := ../../build/android/$(TARGET_ARCH_ABI) #指定so目录
 LOCAL_MODULE_PATH := $(LOCAL_MODULE)
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../common/boost/ $(LOCAL_PATH)/../../include
+
+ LOCAL_CFLAGS += -DASIO_STANDALONE
+
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../common/asio/include $(LOCAL_PATH)/../../include
 $(warning "LOCAL_C_INCLUDES:"$(LOCAL_C_INCLUDES))
-LOCAL_SRC_FILES := jni_wrapper.cpp ../qyutil.cpp
+LOCAL_SRC_FILES += jni_wrapper.cpp
+LOCAL_SRC_FILES += ../qyutil.cpp
 LOCAL_LDLIBS := -llog
 include $(BUILD_SHARED_LIBRARY)

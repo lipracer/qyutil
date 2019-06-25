@@ -12,8 +12,8 @@
 #define IPV4_HEADER_HPP
 
 #include <algorithm>
-#include <boost/asio/ip/address_v4.hpp>
-using namespace boost;
+#include <asio/ip/address_v4.hpp>
+using namespace asio;
 
 // Packet header for IPv4.
 //

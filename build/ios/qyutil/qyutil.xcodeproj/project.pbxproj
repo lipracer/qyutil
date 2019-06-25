@@ -251,7 +251,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../../common/boost";
+				GCC_PREPROCESSOR_DEFINITIONS = ASIO_STANDALONE;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../../common/asio/include";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -264,7 +265,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../../common/boost";
+				GCC_PREPROCESSOR_DEFINITIONS = ASIO_STANDALONE;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../../common/asio/include";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
