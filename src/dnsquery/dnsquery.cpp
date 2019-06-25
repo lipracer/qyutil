@@ -16,6 +16,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <errno.h>
+#include <arpa/inet.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -30,6 +31,7 @@
 #include <fstream>
 #endif
 
+#include <asio/ip/address_v4.hpp>
 #include "../../include/qylog.h"
 
 typedef int SOCKET;
@@ -153,17 +155,23 @@ int socket_gethostbyname(const char* _host, socket_ipinfo_t* _ipinfo, int _timeo
         return -1;
     }
 
-    struct sockaddr_in dest = {0};
+    struct sockaddr_in dest = { 0 };
 
     if (dns_servers.empty()) {
-        LOGE(TSF"No dns servers error.");
+        LOGE("No dns servers error.");
         ::socket_close(sock);
         return -1;
     }
 
     std::vector<std::string>::iterator iter = dns_servers.begin();
     // 配置DNS服务器的IP和端口号
-    dest = *(struct sockaddr_in*)(&socket_address((*iter).c_str(), DNS_PORT).address());
+    //dest = *(struct sockaddr_in*)(&socket_address((*iter).c_str(), DNS_PORT).address());
+    if(0 >= inet_pton(AF_INET, iter->c_str(), &dest.sin_addr))
+    {
+        LOGE("%s", "invalid address!\n");
+        return -1;
+    }
+    dest.sin_port = DNS_PORT;
 
     struct RES_RECORD answers[SOCKET_MAX_IP_COUNT];  // the replies from the DNS server
     memset(answers, 0, sizeof(RES_RECORD)*SOCKET_MAX_IP_COUNT);
@@ -208,7 +216,9 @@ int socket_gethostbyname(const char* _host, socket_ipinfo_t* _ipinfo, int _timeo
         for (int i = 0; i < answer_count; ++i) {
             if (1 == ntohs(answers[i].resource->type)) {  // IPv4 address
                 in_addr_t* p = (in_addr_t*)answers[i].rdata;
-                _ipinfo->ip[_ipinfo->size].s_addr = (*p);  // working without ntohl
+                //_ipinfo->ip[_ipinfo->size].s_addr = (*p);  // working without ntohl
+                auto boost_adress = asio::ip::make_address_v4(*p);
+                _ipinfo->ip[_ipinfo->size] = boost_adress.to_string();
                 _ipinfo->size++;
             }
         }
@@ -231,7 +241,7 @@ int socket_gethostbyname(const char* _host, socket_ipinfo_t* _ipinfo, int _timeo
 bool isValidIpAddress(const char* _ipaddress) {
     struct sockaddr_in sa;
 
-    int result = socket_inet_pton(AF_INET, _ipaddress, (void*) & (sa.sin_addr));
+    int result = inet_pton(AF_INET, _ipaddress, (void*) & (sa.sin_addr));
     return result != 0;
 }
 
@@ -290,7 +300,7 @@ unsigned char* ReadName(unsigned char* _reader, unsigned char* _buffer, int* _co
     name   = (unsigned char*)malloc(INIT_SIZE);
 
     if (NULL == name) {
-        LOGE(TSF"malloc error.");
+        LOGE("malloc error.");
         return NULL;
     }
 
@@ -469,7 +479,8 @@ void GetHostDnsServerIP(std::vector<std::string>& _dns_servers) {
                 int num = (int)s.find(NAME_SVR, 0);
 
                 if (num >= 0) {
-                    s.erase(std::remove_if(s.begin(), s.end(), isspace), s.end());
+                    //TODO
+                    //s.erase(std::remove_if(s.begin(), s.end(), isspace), s.end());
                     s = s.erase(0, NAME_SVR_LEN);
                     _dns_servers.push_back(s);
                 }
@@ -487,8 +498,10 @@ void GetHostDnsServerIP(std::vector<std::string>& _dns_servers) {
 
             for (int i = 0; i < stat.nscount; i++) {
                 nsaddr = stat.nsaddr_list[i];
-                const char* nsIP = socket_address(nsaddr).ip();
-
+                
+                //TODO
+                //const char* nsIP = socket_address(nsaddr).ip();
+                const char* nsIP = nullptr;
                 if (NULL != nsIP)
                 	_dns_servers.push_back(std::string(nsIP));
             }
