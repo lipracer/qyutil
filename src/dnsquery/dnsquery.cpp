@@ -171,7 +171,7 @@ int socket_gethostbyname(const char* _host, socket_ipinfo_t* _ipinfo, int _timeo
         LOGE("%s", "invalid address!\n");
         return -1;
     }
-    dest.sin_port = DNS_PORT;
+    dest.sin_port = htons(DNS_PORT);
 
     struct RES_RECORD answers[SOCKET_MAX_IP_COUNT];  // the replies from the DNS server
     memset(answers, 0, sizeof(RES_RECORD)*SOCKET_MAX_IP_COUNT);
@@ -531,7 +531,7 @@ void GetHostDnsServerIP(std::vector<std::string>& _dns_servers) {
     ULONG ulOutBufLen = sizeof(fi);
 
     if (::GetNetworkParams(&fi, &ulOutBufLen) != ERROR_SUCCESS) {
-        LOGI(TSF" GetNetworkParams() failed");
+        LOGI("GetNetworkParams() failed");
         return;
     }
 

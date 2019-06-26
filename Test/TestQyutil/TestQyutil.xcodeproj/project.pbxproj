@@ -1,0 +1,313 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3343EB9822C312AA000C12FA /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EB9722C312AA000C12FA /* main.cpp */; };
+		3343EBA522C312E5000C12FA /* pinger.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EB9E22C312E5000C12FA /* pinger.hpp */; };
+		3343EBA622C312E5000C12FA /* ipv4_header.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EB9F22C312E5000C12FA /* ipv4_header.hpp */; };
+		3343EBA722C312E5000C12FA /* oc_wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA022C312E5000C12FA /* oc_wrapper.cpp */; };
+		3343EBA822C312E5000C12FA /* dnsquery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA122C312E5000C12FA /* dnsquery.cpp */; };
+		3343EBA922C312E5000C12FA /* QYLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA222C312E5000C12FA /* QYLogger.cpp */; };
+		3343EBAA22C312E5000C12FA /* icmp_header.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA322C312E5000C12FA /* icmp_header.hpp */; };
+		3343EBAB22C312E5000C12FA /* qyLogMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA422C312E5000C12FA /* qyLogMgr.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3343EB9222C312AA000C12FA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		3343EB9422C312AA000C12FA /* TestQyutil */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestQyutil; sourceTree = BUILT_PRODUCTS_DIR; };
+		3343EB9722C312AA000C12FA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		3343EB9E22C312E5000C12FA /* pinger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = pinger.hpp; path = ../../src/ping/pinger.hpp; sourceTree = "<group>"; };
+		3343EB9F22C312E5000C12FA /* ipv4_header.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = ipv4_header.hpp; path = ../../src/ping/ipv4_header.hpp; sourceTree = "<group>"; };
+		3343EBA022C312E5000C12FA /* oc_wrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = oc_wrapper.cpp; path = ../../src/oc/oc_wrapper.cpp; sourceTree = "<group>"; };
+		3343EBA122C312E5000C12FA /* dnsquery.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = dnsquery.cpp; path = ../../src/dnsquery/dnsquery.cpp; sourceTree = "<group>"; };
+		3343EBA222C312E5000C12FA /* QYLogger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = QYLogger.cpp; path = ../../common/qylog/QYLogger.cpp; sourceTree = "<group>"; };
+		3343EBA322C312E5000C12FA /* icmp_header.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = icmp_header.hpp; path = ../../src/ping/icmp_header.hpp; sourceTree = "<group>"; };
+		3343EBA422C312E5000C12FA /* qyLogMgr.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = qyLogMgr.cpp; path = ../../common/qylog/qyLogMgr.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3343EB9122C312AA000C12FA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3343EB8B22C312AA000C12FA = {
+			isa = PBXGroup;
+			children = (
+				3343EBA122C312E5000C12FA /* dnsquery.cpp */,
+				3343EBA322C312E5000C12FA /* icmp_header.hpp */,
+				3343EB9F22C312E5000C12FA /* ipv4_header.hpp */,
+				3343EBA022C312E5000C12FA /* oc_wrapper.cpp */,
+				3343EB9E22C312E5000C12FA /* pinger.hpp */,
+				3343EBA222C312E5000C12FA /* QYLogger.cpp */,
+				3343EBA422C312E5000C12FA /* qyLogMgr.cpp */,
+				3343EB9622C312AA000C12FA /* TestQyutil */,
+				3343EB9522C312AA000C12FA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3343EB9522C312AA000C12FA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3343EB9422C312AA000C12FA /* TestQyutil */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3343EB9622C312AA000C12FA /* TestQyutil */ = {
+			isa = PBXGroup;
+			children = (
+				3343EB9722C312AA000C12FA /* main.cpp */,
+			);
+			path = TestQyutil;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3343EB9322C312AA000C12FA /* TestQyutil */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3343EB9B22C312AA000C12FA /* Build configuration list for PBXNativeTarget "TestQyutil" */;
+			buildPhases = (
+				3343EB9022C312AA000C12FA /* Sources */,
+				3343EB9122C312AA000C12FA /* Frameworks */,
+				3343EB9222C312AA000C12FA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TestQyutil;
+			productName = TestQyutil;
+			productReference = 3343EB9422C312AA000C12FA /* TestQyutil */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3343EB8C22C312AA000C12FA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1020;
+				ORGANIZATIONNAME = "陈龙";
+				TargetAttributes = {
+					3343EB9322C312AA000C12FA = {
+						CreatedOnToolsVersion = 10.2.1;
+					};
+				};
+			};
+			buildConfigurationList = 3343EB8F22C312AA000C12FA /* Build configuration list for PBXProject "TestQyutil" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 3343EB8B22C312AA000C12FA;
+			productRefGroup = 3343EB9522C312AA000C12FA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3343EB9322C312AA000C12FA /* TestQyutil */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3343EB9022C312AA000C12FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3343EBA522C312E5000C12FA /* pinger.hpp in Sources */,
+				3343EBA622C312E5000C12FA /* ipv4_header.hpp in Sources */,
+				3343EBA722C312E5000C12FA /* oc_wrapper.cpp in Sources */,
+				3343EBA822C312E5000C12FA /* dnsquery.cpp in Sources */,
+				3343EBA922C312E5000C12FA /* QYLogger.cpp in Sources */,
+				3343EBAA22C312E5000C12FA /* icmp_header.hpp in Sources */,
+				3343EBAB22C312E5000C12FA /* qyLogMgr.cpp in Sources */,
+				3343EB9822C312AA000C12FA /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3343EB9922C312AA000C12FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		3343EB9A22C312AA000C12FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		3343EB9C22C312AA000C12FA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GCC_PREPROCESSOR_DEFINITIONS = ASIO_STANDALONE;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../common/asio/include";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../include";
+			};
+			name = Debug;
+		};
+		3343EB9D22C312AA000C12FA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GCC_PREPROCESSOR_DEFINITIONS = ASIO_STANDALONE;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../common/asio/include";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../include";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3343EB8F22C312AA000C12FA /* Build configuration list for PBXProject "TestQyutil" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3343EB9922C312AA000C12FA /* Debug */,
+				3343EB9A22C312AA000C12FA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3343EB9B22C312AA000C12FA /* Build configuration list for PBXNativeTarget "TestQyutil" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3343EB9C22C312AA000C12FA /* Debug */,
+				3343EB9D22C312AA000C12FA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3343EB8C22C312AA000C12FA /* Project object */;
+}

@@ -133,7 +133,7 @@ public:
             read_ret = recvfrom(_socket, _recv_buf, recv_len, 0, (struct sockaddr*)&addr, &addr_len);
             if(read_ret < 0)
             {
-                cout << "timeout\n" << endl;
+                LOGI("ping host:%s timeout", _host.c_str());
                 break;
             }
             stringbuf buf;
