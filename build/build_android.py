@@ -35,5 +35,8 @@ def build_clear():
     rm_path("../../build/android/libs")
     rm_path("../../build/android/obj")
 
-if __name__ == "__main__":
+def main():
     build()
+
+if __name__ == "__main__":
+    main()
