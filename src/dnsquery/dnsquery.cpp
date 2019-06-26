@@ -141,7 +141,7 @@ int socket_gethostbyname(const char* _host, socket_ipinfo_t* _ipinfo, int _timeo
     std::vector<std::string> dns_servers;
 
     if (_dnsserver && isValidIpAddress(_dnsserver)) {
-        LOGI("DNS server: %0", _dnsserver);
+        LOGI("DNS server: %s", _dnsserver);
         dns_servers.push_back(_dnsserver);
     } else {
         LOGI("use default DNS server.");
@@ -217,7 +217,7 @@ int socket_gethostbyname(const char* _host, socket_ipinfo_t* _ipinfo, int _timeo
             if (1 == ntohs(answers[i].resource->type)) {  // IPv4 address
                 in_addr_t* p = (in_addr_t*)answers[i].rdata;
                 //_ipinfo->ip[_ipinfo->size].s_addr = (*p);  // working without ntohl
-                auto boost_adress = asio::ip::make_address_v4(*p);
+                auto boost_adress = asio::ip::make_address_v4(ntohl(*p));
                 _ipinfo->ip[_ipinfo->size] = boost_adress.to_string();
                 _ipinfo->size++;
             }
@@ -233,7 +233,7 @@ int socket_gethostbyname(const char* _host, socket_ipinfo_t* _ipinfo, int _timeo
     } while (false);
 
     FreeAll(answers);
-    LOGI("close fd in dnsquery,sock=%0", sock);
+    LOGI("close fd in dnsquery,sock=%d", sock);
     ::socket_close(sock);
     return ret;  //* 查询DNS服务器超时 
 }
@@ -466,6 +466,7 @@ void GetHostDnsServerIP(std::vector<std::string>& _dns_servers) {
 #define RESOLV_CONFIG_PATH ("/etc/resolv.conf")
 #if TARGET_OS_IPHONE
 void GetHostDnsServerIP(std::vector<std::string>& _dns_servers) {
+    LOGD("GetHostDnsServerIP");
 	_dns_servers.clear();
     std::ifstream fin(RESOLV_CONFIG_PATH);
 
@@ -475,13 +476,15 @@ void GetHostDnsServerIP(std::vector<std::string>& _dns_servers) {
     if (fin.good()) {
         while (!fin.eof()) {
             if (fin.getline(str, LINE_LENGTH).good()) {
+                LOGD("line str:%s", str);
                 std::string s(str);
                 int num = (int)s.find(NAME_SVR, 0);
 
                 if (num >= 0) {
                     //TODO
-                    //s.erase(std::remove_if(s.begin(), s.end(), isspace), s.end());
+                    s.erase(std::remove_if(s.begin(), s.end(), ::isspace), s.end());
                     s = s.erase(0, NAME_SVR_LEN);
+                    LOGD("/etc/resolv.conf ip:%s", s.c_str());
                     _dns_servers.push_back(s);
                 }
             } else {
@@ -501,7 +504,9 @@ void GetHostDnsServerIP(std::vector<std::string>& _dns_servers) {
                 
                 //TODO
                 //const char* nsIP = socket_address(nsaddr).ip();
-                const char* nsIP = nullptr;
+                const char* nsIP = asio::ip::make_address_v4(ntohl(nsaddr.sin_addr.s_addr)).to_string().c_str();
+                //const char* nsIP = nullptr;
+                LOGD("/etc/resolv.conf not exit ip:%s", nsIP);
                 if (NULL != nsIP)
                 	_dns_servers.push_back(std::string(nsIP));
             }

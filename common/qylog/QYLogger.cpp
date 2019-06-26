@@ -39,7 +39,7 @@ thread::id GetThreadId()
 string format_msg(QYCStr module, QYLogPriority level, QYCStr msg)
 {
     stringstream ss;
-    ss << "[module:" << module << "]" << "[time:" << GetTimePoint() << "]" << "[thread:" << this_thread::get_id() << "]" << "[" << LogLevelInfo[(int)level] << "]" << msg << "\n";
+    ss << "[m:" << module << "]" << "[ts:" << GetTimePoint() << "]" << "[th:" << this_thread::get_id() << "]" << "[" << LogLevelInfo[(int)level] << "]" << msg << "\n";
     return ss.str();
 }
 

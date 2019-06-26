@@ -160,9 +160,8 @@ public:
                 
                 std::cout << ss.str();
 
-                LOGE("%s", _host.c_str());
-                LOGE("%s", ss.str().c_str());
-             
+                LOGD("%s", _host.c_str());
+                LOGD("%s", ss.str().c_str());            
                 
             }
         }

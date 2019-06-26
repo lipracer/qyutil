@@ -2,6 +2,8 @@
 #include "../dnsquery/dnsquery.h"
 #include "../../include/qylog.h"
 
+extern "C" {
+
 void ping(char* host)
 {
     pinger<> pinger(host, 10, 0, 1, 1);
@@ -19,4 +21,6 @@ void TestDNSQuery(char* host, char* dnsSer)
         LOGD("query ip:%s", _ipinfo.ip[i].c_str());
         pinger<> pinger(_ipinfo.ip[i].c_str(), 10, 0, 1, 1);
     }
+}
+    
 }
