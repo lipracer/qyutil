@@ -21,7 +21,7 @@ static void test_dns(std::string host)
     for(int i = 0; i < _ipinfo.size ; ++i)
     {
         LOGD("query ip:%s", _ipinfo.ip[i].c_str());
-        pinger<> pinger(_ipinfo.ip[i].c_str(), 10, 0, 1, 1);
+        pinger<1, __ANDROID__> pinger(_ipinfo.ip[i].c_str(), 10, 0, 1, 0);
     }
 }
 //com.iqiyi.pizza.react.fragment.PZWelfareCenterFragment

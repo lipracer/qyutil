@@ -59,7 +59,7 @@ public:
                 break;
             }
             timeval timeout;
-            timeout.tv_sec = 1;
+            timeout.tv_sec = _interval;
             timeout.tv_usec = 0;
             setsockopt(_socket, SOL_SOCKET, SO_RCVBUF, &recv_len, sizeof(recv_len));
             setsockopt(_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
@@ -192,23 +192,29 @@ public:
     {
         stringstream ss;
         //int index = snprintf(cmd, 256, "ping -c %d -i %d -w %d", _querycount, interval, timeout);
+        if(0 == timeout)
+        {
+            timeout = interval * times;
+        }
         ss << "ping " << " -c " << times << " -i " <<  interval << " -w " << timeout << " " << host << "\n"; 
 
         const char * cmd = ss.str().c_str();
-        LOGE("----------------cmd:%s", cmd);
+        LOGI("cmd:%s", cmd);
         FILE* pp = popen(cmd, "r");
         if(!pp)
         {
             LOGE("open %s fail", cmd);
         }
         char line[1024] = { 0 };
+        string str_result;
         while (fgets(line, sizeof(line), pp) != NULL)
         {
             _result.push_back(string(line));
-            LOGE("ping result:%s", line);
+            str_result += line;
             memset(line, 0, sizeof(line));            
         }
         pclose(pp);
+        LOGI("ping result:%s", str_result.c_str());
         
     }
     vector<string> _result;

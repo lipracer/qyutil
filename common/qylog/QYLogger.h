@@ -9,7 +9,7 @@ enum class QYLogPriority : int
     UNKNOWN = 0,
     DEFAULT,
     VERBOSE,
-    Debug,
+    LDEBUG,
     INFO,
     WARN,
     ERROR,

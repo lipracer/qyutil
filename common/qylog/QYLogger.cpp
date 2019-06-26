@@ -48,8 +48,6 @@ QYBaseLogger::QYBaseLogger(QYLogPriority level):m_level(level) {}
 QYBaseLogger::~QYBaseLogger() {}
 
 
-
-
 int QYBaseLogger::Log(QYCStr module, QYLogPriority level, QYCStr msg)
 {
     //cout << "QYBaseLogger:" << msg << endl;
@@ -63,17 +61,18 @@ QYLoggerConsole::QYLoggerConsole(QYLogPriority level) : QYBaseLogger(level)
 QYLoggerConsole::~QYLoggerConsole() {}
 int QYLoggerConsole::Log(QYCStr module, QYLogPriority level, QYCStr msg)
 {
+    
     if (level > m_level)
-    {
-        
+    {       
         chrono::system_clock::time_point now = chrono::system_clock::now();
         time_t now_c = chrono::system_clock::to_time_t(now);
         //auto cstime = localtime(&now_c);
-
-        fprintf(stdout, "%s", format_msg(module, level, msg).c_str());
-
-#ifdef __ANDROID__
-        __android_log_print((int)level, module, "%s", format_msg(module, level, msg).c_str());
+        const char* msg__ = format_msg(module, level, msg).c_str();
+#ifdef __ANDROID__        
+        //__android_log_print((int)QYLogPriority::ERROR, "QYUtil-Log", "level:%d m_level:%d %s",level, m_level, msg__);
+        __android_log_print((int)level, module, "%s", msg__);
+#else
+        fprintf(stdout, "%s", msg__);
 #endif
 
 //#ifdef _WINDOWS
