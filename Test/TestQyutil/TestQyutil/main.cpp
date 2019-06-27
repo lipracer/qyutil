@@ -28,7 +28,7 @@ int main(int argc, const char * argv[])
     }
     this_thread::sleep_for(chrono::milliseconds(10000000000));
 #endif
-    TraceRouter<NetCommon::TraceRouterType::UDP> tRouter(string("115.239.211.112"));
+    TraceRouter<NetCommon::TraceRouterType::UDP> tRouter(string("115.239.210.27"));
 
     return 0;
 }

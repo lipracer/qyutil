@@ -90,13 +90,6 @@ public:
             strcpy(request_len + _send_buf, body.c_str());
             sockaddr_in addr;
             memset(&addr, 0, sizeof(addr));
-//            long laddr = inet_addr(_host.c_str());
-//            addr.sin_family = AF_INET;
-//            addr.sin_addr.s_addr = laddr;
-//            if(laddr == INADDR_NONE)
-//            {
-//                break;
-//            }
             if(0 >= (send_ret = inet_pton(AF_INET, _host.c_str(), &addr.sin_addr)))
             {
                 LOGE("%s", "invalid address!\n");
@@ -156,7 +149,6 @@ public:
                 << ": icmp_seq=" << icmp_hdr.sequence_number()
                 << ", ttl=" << ipv4_hdr.time_to_live()
                 << ", time=" << ((chrono::duration_cast<chrono::milliseconds>)(chrono::steady_clock::now() - _send_time)).count() << "ms";
-                
                 std::cout << ss.str();
 
                 LOGD("%s", _host.c_str());
@@ -213,12 +205,10 @@ public:
             memset(line, 0, sizeof(line));            
         }
         pclose(pp);
-        LOGI("ping result:%s", str_result.c_str());
-        
+        LOGI("ping result:%s", str_result.c_str());        
     }
     vector<string> _result;
 };
-
 #endif
 
 

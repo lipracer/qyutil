@@ -7,15 +7,39 @@ UDP or ICMP
 
 #include <string>
 #include <asio/ip/address_v4.hpp>
+
 #include "qylog.h"
+#include "net_common/ipv4_header.hpp"
+#include "net_common/icmp_header.hpp"
 #include "net_common/net_common.h"
 
 using namespace std;
 using namespace NetCommon;
 
-const static int BUF_LEN = 65536;
+extern int errno;
 
-template<NetCommon::TraceRouterType ProType>
+const static size_t BUF_LEN = 65536;
+uint16_t ip_chksum(uint16_t initcksum, uint8_t *ptr, int len)
+{
+    unsigned int cksum;
+    int idx;
+    int odd;
+    cksum = (unsigned int) initcksum;
+    odd = len & 1;
+    len -= odd;
+    for (idx = 0; idx < len; idx += 2)
+        cksum += ((unsigned long) ptr[idx] << 8) + ((unsigned long) ptr[idx+1]);
+    
+    if (odd)
+        cksum += ((unsigned long) ptr[idx] << 8);
+    
+    while (cksum >> 16)
+        cksum = (cksum & 0xFFFF) + (cksum >> 16);
+    
+    return cksum;
+}
+
+template<TraceRouterType ProType=TraceRouterType::UDP>
 class TraceRouter
 {
 public:
@@ -27,6 +51,8 @@ public:
     {
         _send_buf = new char[BUF_LEN];
         _recv_buf = new char[BUF_LEN];
+        _data_len = 24;
+        _sequence_number = 0;
         start();
     }
 
@@ -49,21 +75,71 @@ public:
                 cout << "create socket error!" << endl;
                 break;
             }
-            int opt = 1;
-            setsockopt(_socket, IPPROTO_IP, IP_HDRINCL, &opt, sizeof(opt));
-            setsockopt(_socket, SOL_SOCKET, SO_RCVBUF, &BUF_LEN, sizeof(BUF_LEN));
+            //原始套接字必须root权限
+//            int opt = 1;
+//            if(0 > (ret = setsockopt(_socket, IPPROTO_IP, IP_HDRINCL, &opt, sizeof(opt))))
+//            {
+//                LOGE("set raw socket error!!!");
+//                break;
+//            }
             timeval timeout;
             timeout.tv_sec = TraceRouterTimeOut;
             timeout.tv_usec = 0;
-            setsockopt(_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
-            
-            explore_router(1);
+            if(0 > (ret = setsockopt(_socket, SOL_SOCKET, SO_RCVBUF, &BUF_LEN, sizeof(BUF_LEN))))
+            {
+                LOGE("set socket recv timeout error!!!");
+                break;
+            }
+            if(0 > (ret = setsockopt(_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout))))
+            {
+                LOGE("set socket recv timeout error!!!");
+                break;
+            }
+            //prepare_ip_udp_packet();
+            for(int i = 1; i < 50; i++)
+            {
+//                _ip_head->ttl = (0XFF & i);
+//                _ip_head->check_sum = htons(ip_chksum(0, (uint8_t*)_send_buf, sizeof(PROP_IP_HEADER)));
+                int ttl = 0XFF & i;
+                if(0 > (ret = setsockopt(_socket, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl))))
+                {
+                    LOGE("set socket IP_TTL error:%d!!!", errno);
+                    goto EXIT;
+                }
+                string t_ip;
+                explore_router(i, t_ip);
+                if(t_ip == _host)
+                {
+                    ret = 0;
+                    break;
+                }
+            }
         }
         while(false);
+    EXIT:
         return ret;
     }
+    
+    int prepare_ip_udp_packet()
+    {
+        memset(_send_buf, 0, BUF_LEN);
+        
+        _ip_head = new(_send_buf) PROP_IP_HEADER();
+        _ip_head->pack_id = htons(0xa562);
+        
+        _udp_head = new(_send_buf + sizeof(PROP_IP_HEADER)) UDP_HAEDER();
+        _udp_head->sour_port = htons(DefaultPort_S);
+        _udp_head->dest_port = htons(DefaultPort_D);
+        _udp_head->udp_len = htons(sizeof(UDP_HAEDER));
+        _udp_head->check_sum = htons(0xf9ba);
+        
+        _ip_head->pack_len = htons(sizeof(PROP_IP_HEADER) + sizeof(UDP_HAEDER) + _data_len);
+        _ip_head->sour_ip = htonl(asio::ip::make_address_v4("10.4.156.103").to_ulong());
+        _ip_head->dest_ip = htonl(asio::ip::make_address_v4(_host.c_str()).to_ulong());
+        return 0;
+    }
 
-    int explore_router(int index)
+    int explore_router(int index, string& t_ip)
     {
         int ret = 0;
         do
@@ -76,40 +152,33 @@ public:
                 LOGE("%s", "invalid address!\n");
                 break;
             }
+            addr.sin_port = htons(DefaultPort_D);
             
-            memset(_send_buf, 0, BUF_LEN);
+            string body = "xxx";
             
-            u8 un_head[] = { 0x74, 0xea, 0xcb, 0xd0, 0x30, 0x90, 0xf0, 0x18, 0x98, 0x59, 0x2a, 0xcd, 0x08, 0x00 };
-            static_assert(sizeof(un_head) == 14, "");
-            memcpy(_send_buf, un_head, sizeof(un_head));
-            print_buf();
-            
-            PROP_IP_HEADER *ip_head = operator new(_send_buf + sizeof(un_head));
-            ip_head->ttl = index & 0XFF;
-            print_buf();
-
-            UDP_HAEDER udp_head;;
-            udp_head.sour_port = htons(DefaultPort_S);
-            udp_head.dest_port = htons(DefaultPort_D);
-            udp_head.udp_len = htons(0x20);
-            udp_head.check_sum = htons(0xf9ba);
-            memcpy(_send_buf + sizeof(un_head) + sizeof(ip_head), &udp_head, sizeof(udp_head));
-            print_buf();
-
-            int data_len = sizeof(un_head) + sizeof(ip_head) + sizeof(udp_head) + 24;
-            ((PROP_IP_HEADER*)(_send_buf + sizeof(un_head)))->pack_len = htons(52);
-            ((PROP_IP_HEADER*)(_send_buf + sizeof(un_head)))->check_sum = htons(0x3661);
-            ((PROP_IP_HEADER*)(_send_buf + sizeof(un_head)))->sour_ip = htonl(asio::ip::make_address_v4("10.4.156.103").to_ulong());
-            ((PROP_IP_HEADER*)(_send_buf + sizeof(un_head)))->dest_ip = htonl(asio::ip::make_address_v4("115.239.210.27").to_ulong());
-            
-            print_buf();
-
-            ret = sendto(_socket, _send_buf, data_len, 0, (sockaddr*)&addr, sizeof(addr));
+            ret = sendto(_socket, _send_buf, body.length(), 0, (sockaddr*)&addr, sizeof(addr));
             if(ret <= 0)
             {
-                LOGE("send fail %d host:%s", ret, _host.c_str());
+                LOGD("send fail %d host:%s errno:%d", ret, _host.c_str(), errno);
                 break;
             }
+            memset(_recv_buf, 0, BUF_LEN);
+            socklen_t addr_len = 0;
+            ret = recvfrom(_socket, _recv_buf, BUF_LEN, 0, (struct sockaddr*)&addr, &addr_len);
+            if(ret <= 0)
+            {
+                //LOGD("******* recv error!");
+                cout << index << "      **********" << endl;
+                break;
+            }
+            stringbuf buf;
+            istream stream(&buf);
+            buf.sputn(_recv_buf, ret);
+            ipv4_header ipv4_hdr;
+            icmp_header icmp_hdr;
+            stream >> ipv4_hdr >> icmp_hdr;
+            t_ip = ipv4_hdr.source_address().to_string();
+            cout << index << "      router addr:" << ipv4_hdr.source_address().to_string() << endl;
         }
         while (false);
         return ret;
@@ -123,7 +192,7 @@ public:
     void print_buf()
     {
         int i = 0;
-        while (i < 52 + 14)
+        while (i < sizeof(PROP_IP_HEADER) + sizeof(UDP_HAEDER) + _data_len)
         {
             if(i % 16 == 0)
             {
@@ -140,8 +209,12 @@ protected:
     char * _send_buf;
     char * _recv_buf;
     RawSocket _socket;
+    PROP_IP_HEADER * _ip_head;
+    UDP_HAEDER * _udp_head;
+    int _data_len;
+    int _sequence_number;
     
-static const int TraceRouterTimeOut = 1;
+static const int TraceRouterTimeOut = 5;
 static const unsigned short DefaultPort_S = 38625;
 static const unsigned short DefaultPort_D = 33435;
 };

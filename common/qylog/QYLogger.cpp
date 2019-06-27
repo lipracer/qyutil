@@ -39,7 +39,7 @@ thread::id GetThreadId()
 string format_msg(QYCStr module, QYLogPriority level, QYCStr msg)
 {
     stringstream ss;
-    ss << "[m:" << module << "]" << "[ts:" << GetTimePoint() << "]" << "[th:" << this_thread::get_id() << "]" << "[" << LogLevelInfo[(int)level] << "]" << msg << "\n";
+    ss << "[m:" << module << "]" << "[ts:" << GetTimePoint() << "]" << "[th:" << this_thread::get_id() << "]" << "[" << LogLevelInfo[(int)level] << "]" << msg;
     return ss.str();
 }
 
@@ -73,7 +73,7 @@ int QYLoggerConsole::Log(QYCStr module, QYLogPriority level, QYCStr msg)
         __android_log_print((int)level, module, "%s", msg__);
 #else
         //fprintf(stdout, "%s", msg__);
-        cout << msg__ << endl;
+        cout << msg__ << "\n";
 #endif
 
 //#ifdef _WINDOWS
