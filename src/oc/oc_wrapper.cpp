@@ -2,7 +2,7 @@
 #include "../dnsquery/dnsquery.h"
 #include "../../include/qylog.h"
 
-extern "C" {
+//extern "C" {
 
 void ping(char* host)
 {
@@ -10,7 +10,7 @@ void ping(char* host)
 }    
 
 
-void TestDNSQuery(char* host, char* dnsSer)
+void TestDNSQuery(const char* host, const char* dnsSer)
 {
     socket_ipinfo_t _ipinfo;
     _ipinfo.size = 0;
@@ -23,4 +23,4 @@ void TestDNSQuery(char* host, char* dnsSer)
     }
 }
     
-}
+//}

@@ -72,7 +72,8 @@ int QYLoggerConsole::Log(QYCStr module, QYLogPriority level, QYCStr msg)
         //__android_log_print((int)QYLogPriority::ERROR, "QYUtil-Log", "level:%d m_level:%d %s",level, m_level, msg__);
         __android_log_print((int)level, module, "%s", msg__);
 #else
-        fprintf(stdout, "%s", msg__);
+        //fprintf(stdout, "%s", msg__);
+        cout << msg__ << endl;
 #endif
 
 //#ifdef _WINDOWS

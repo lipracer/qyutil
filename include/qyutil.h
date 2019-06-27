@@ -11,7 +11,7 @@ namespace QyUtil
 
 using namespace std;
 
-using QYUtilTask = std::pair<function<int(void)>, function<int(void)>>;
+using QYUtilTask = std::pair<function<void(void)>, function<void(void)>>;
 
 class qyutil
 {
@@ -25,7 +25,7 @@ public:
     qyutil(/* args */);
     ~qyutil();
     void run();
-    void put_task(QYUtilTask& task);
+    void put_task(QYUtilTask task);
 private:
     thread* __th;
     list<QYUtilTask> __msg_queue;

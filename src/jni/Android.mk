@@ -10,7 +10,7 @@ LOCAL_MODULE_PATH := $(LOCAL_MODULE)
 
 LOCAL_CFLAGS += -DASIO_STANDALONE
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../common/asio/include $(LOCAL_PATH)/../../include
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../common/asio/include $(LOCAL_PATH)/../../common $(LOCAL_PATH)/../../include
 
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../../common/qylog/qyLogMgr.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../../common/qylog/QYLogger.cpp

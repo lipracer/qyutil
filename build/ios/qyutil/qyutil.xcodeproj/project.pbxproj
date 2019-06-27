@@ -8,13 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		338B3F1422C257EA00177A1A /* QYLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 338B3F0C22C257EA00177A1A /* QYLogger.cpp */; };
-		338B3F1522C257EA00177A1A /* icmp_header.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 338B3F0D22C257EA00177A1A /* icmp_header.hpp */; };
 		338B3F1622C257EA00177A1A /* oc_wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 338B3F0E22C257EA00177A1A /* oc_wrapper.cpp */; };
 		338B3F1722C257EA00177A1A /* qyutil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 338B3F0F22C257EA00177A1A /* qyutil.cpp */; };
 		338B3F1822C257EA00177A1A /* qyLogMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 338B3F1022C257EA00177A1A /* qyLogMgr.cpp */; };
 		338B3F1922C257EA00177A1A /* dnsquery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 338B3F1122C257EA00177A1A /* dnsquery.cpp */; };
 		338B3F1A22C257EA00177A1A /* pinger.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 338B3F1222C257EA00177A1A /* pinger.hpp */; };
-		338B3F1B22C257EA00177A1A /* ipv4_header.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 338B3F1322C257EA00177A1A /* ipv4_header.hpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,13 +30,11 @@
 /* Begin PBXFileReference section */
 		338B3F0022C2578300177A1A /* libqyutil.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libqyutil.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		338B3F0C22C257EA00177A1A /* QYLogger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = QYLogger.cpp; path = ../../../common/qylog/QYLogger.cpp; sourceTree = "<group>"; };
-		338B3F0D22C257EA00177A1A /* icmp_header.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = icmp_header.hpp; path = ../../../src/ping/icmp_header.hpp; sourceTree = "<group>"; };
 		338B3F0E22C257EA00177A1A /* oc_wrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = oc_wrapper.cpp; path = ../../../src/oc/oc_wrapper.cpp; sourceTree = "<group>"; };
 		338B3F0F22C257EA00177A1A /* qyutil.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = qyutil.cpp; path = ../../../src/qyutil.cpp; sourceTree = "<group>"; };
 		338B3F1022C257EA00177A1A /* qyLogMgr.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = qyLogMgr.cpp; path = ../../../common/qylog/qyLogMgr.cpp; sourceTree = "<group>"; };
 		338B3F1122C257EA00177A1A /* dnsquery.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = dnsquery.cpp; path = ../../../src/dnsquery/dnsquery.cpp; sourceTree = "<group>"; };
 		338B3F1222C257EA00177A1A /* pinger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = pinger.hpp; path = ../../../src/ping/pinger.hpp; sourceTree = "<group>"; };
-		338B3F1322C257EA00177A1A /* ipv4_header.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = ipv4_header.hpp; path = ../../../src/ping/ipv4_header.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,8 +52,6 @@
 			isa = PBXGroup;
 			children = (
 				338B3F1122C257EA00177A1A /* dnsquery.cpp */,
-				338B3F0D22C257EA00177A1A /* icmp_header.hpp */,
-				338B3F1322C257EA00177A1A /* ipv4_header.hpp */,
 				338B3F0E22C257EA00177A1A /* oc_wrapper.cpp */,
 				338B3F1222C257EA00177A1A /* pinger.hpp */,
 				338B3F0C22C257EA00177A1A /* QYLogger.cpp */,
@@ -140,13 +134,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				338B3F1422C257EA00177A1A /* QYLogger.cpp in Sources */,
-				338B3F1522C257EA00177A1A /* icmp_header.hpp in Sources */,
 				338B3F1622C257EA00177A1A /* oc_wrapper.cpp in Sources */,
 				338B3F1722C257EA00177A1A /* qyutil.cpp in Sources */,
 				338B3F1822C257EA00177A1A /* qyLogMgr.cpp in Sources */,
 				338B3F1922C257EA00177A1A /* dnsquery.cpp in Sources */,
 				338B3F1A22C257EA00177A1A /* pinger.hpp in Sources */,
-				338B3F1B22C257EA00177A1A /* ipv4_header.hpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,7 +262,10 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				GCC_PREPROCESSOR_DEFINITIONS = ASIO_STANDALONE;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../../common/asio/include";
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/../../../common/asio/include",
+					"$(PROJECT_DIR)/../../../common/",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -284,7 +279,10 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				GCC_PREPROCESSOR_DEFINITIONS = ASIO_STANDALONE;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../../common/asio/include";
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/../../../common/asio/include",
+					"$(PROJECT_DIR)/../../../common/",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

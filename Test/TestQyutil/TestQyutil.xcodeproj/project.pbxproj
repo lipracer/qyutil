@@ -9,12 +9,11 @@
 /* Begin PBXBuildFile section */
 		3343EB9822C312AA000C12FA /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EB9722C312AA000C12FA /* main.cpp */; };
 		3343EBA522C312E5000C12FA /* pinger.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EB9E22C312E5000C12FA /* pinger.hpp */; };
-		3343EBA622C312E5000C12FA /* ipv4_header.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EB9F22C312E5000C12FA /* ipv4_header.hpp */; };
 		3343EBA722C312E5000C12FA /* oc_wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA022C312E5000C12FA /* oc_wrapper.cpp */; };
 		3343EBA822C312E5000C12FA /* dnsquery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA122C312E5000C12FA /* dnsquery.cpp */; };
 		3343EBA922C312E5000C12FA /* QYLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA222C312E5000C12FA /* QYLogger.cpp */; };
-		3343EBAA22C312E5000C12FA /* icmp_header.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA322C312E5000C12FA /* icmp_header.hpp */; };
 		3343EBAB22C312E5000C12FA /* qyLogMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA422C312E5000C12FA /* qyLogMgr.cpp */; };
+		3379EC5A22C4634D00D2EE2E /* qyutil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3379EC5922C4634D00D2EE2E /* qyutil.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,12 +32,12 @@
 		3343EB9422C312AA000C12FA /* TestQyutil */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestQyutil; sourceTree = BUILT_PRODUCTS_DIR; };
 		3343EB9722C312AA000C12FA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		3343EB9E22C312E5000C12FA /* pinger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = pinger.hpp; path = ../../src/ping/pinger.hpp; sourceTree = "<group>"; };
-		3343EB9F22C312E5000C12FA /* ipv4_header.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = ipv4_header.hpp; path = ../../src/ping/ipv4_header.hpp; sourceTree = "<group>"; };
 		3343EBA022C312E5000C12FA /* oc_wrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = oc_wrapper.cpp; path = ../../src/oc/oc_wrapper.cpp; sourceTree = "<group>"; };
 		3343EBA122C312E5000C12FA /* dnsquery.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = dnsquery.cpp; path = ../../src/dnsquery/dnsquery.cpp; sourceTree = "<group>"; };
 		3343EBA222C312E5000C12FA /* QYLogger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = QYLogger.cpp; path = ../../common/qylog/QYLogger.cpp; sourceTree = "<group>"; };
-		3343EBA322C312E5000C12FA /* icmp_header.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = icmp_header.hpp; path = ../../src/ping/icmp_header.hpp; sourceTree = "<group>"; };
 		3343EBA422C312E5000C12FA /* qyLogMgr.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = qyLogMgr.cpp; path = ../../common/qylog/qyLogMgr.cpp; sourceTree = "<group>"; };
+		3379EC5922C4634D00D2EE2E /* qyutil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qyutil.cpp; path = ../../src/qyutil.cpp; sourceTree = "<group>"; };
+		3379EC5D22C46D1800D2EE2E /* tracerouter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = tracerouter.hpp; path = ../../src/tracerouter/tracerouter.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,12 +55,12 @@
 			isa = PBXGroup;
 			children = (
 				3343EBA122C312E5000C12FA /* dnsquery.cpp */,
-				3343EBA322C312E5000C12FA /* icmp_header.hpp */,
-				3343EB9F22C312E5000C12FA /* ipv4_header.hpp */,
 				3343EBA022C312E5000C12FA /* oc_wrapper.cpp */,
 				3343EB9E22C312E5000C12FA /* pinger.hpp */,
+				3379EC5D22C46D1800D2EE2E /* tracerouter.hpp */,
 				3343EBA222C312E5000C12FA /* QYLogger.cpp */,
 				3343EBA422C312E5000C12FA /* qyLogMgr.cpp */,
+				3379EC5922C4634D00D2EE2E /* qyutil.cpp */,
 				3343EB9622C312AA000C12FA /* TestQyutil */,
 				3343EB9522C312AA000C12FA /* Products */,
 			);
@@ -139,12 +138,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3379EC5A22C4634D00D2EE2E /* qyutil.cpp in Sources */,
 				3343EBA522C312E5000C12FA /* pinger.hpp in Sources */,
-				3343EBA622C312E5000C12FA /* ipv4_header.hpp in Sources */,
 				3343EBA722C312E5000C12FA /* oc_wrapper.cpp in Sources */,
 				3343EBA822C312E5000C12FA /* dnsquery.cpp in Sources */,
 				3343EBA922C312E5000C12FA /* QYLogger.cpp in Sources */,
-				3343EBAA22C312E5000C12FA /* icmp_header.hpp in Sources */,
 				3343EBAB22C312E5000C12FA /* qyLogMgr.cpp in Sources */,
 				3343EB9822C312AA000C12FA /* main.cpp in Sources */,
 			);
@@ -269,7 +267,10 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				GCC_PREPROCESSOR_DEFINITIONS = ASIO_STANDALONE;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../common/asio/include";
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/../../common/asio/include",
+					"$(PROJECT_DIR)/../../common",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../include";
 			};
@@ -280,7 +281,10 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				GCC_PREPROCESSOR_DEFINITIONS = ASIO_STANDALONE;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../common/asio/include";
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/../../common/asio/include",
+					"$(PROJECT_DIR)/../../common",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../include";
 			};

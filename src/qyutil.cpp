@@ -19,7 +19,7 @@ qyutil::~qyutil()
     delete __th;
 }
 
-void qyutil::put_task(QYUtilTask& task)
+void qyutil::put_task(QYUtilTask task)
 {
     lock_guard<mutex> tMtx(__cvmtx);
     __msg_queue.push_back(task);
@@ -43,7 +43,7 @@ void qyutil::run()
         if(tmp_task.first)
         {
             tmp_task.first();
-            tmp_task.second();
+            if(tmp_task.second) tmp_task.second();
         }
     }
 }

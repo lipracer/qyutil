@@ -12,8 +12,8 @@
 #include <chrono>
 #include <vector>
 
-#include "icmp_header.hpp"
-#include "ipv4_header.hpp"
+#include "net_common/icmp_header.hpp"
+#include "net_common/ipv4_header.hpp"
 
 #include "qyutil.h"
 #include "qylog.h"
@@ -155,8 +155,7 @@ public:
                 << " bytes from " << ipv4_hdr.source_address()
                 << ": icmp_seq=" << icmp_hdr.sequence_number()
                 << ", ttl=" << ipv4_hdr.time_to_live()
-                << ", time=" << ((chrono::duration_cast<chrono::milliseconds>)(chrono::steady_clock::now() - _send_time)).count() << "ms"
-                << std::endl;
+                << ", time=" << ((chrono::duration_cast<chrono::milliseconds>)(chrono::steady_clock::now() - _send_time)).count() << "ms";
                 
                 std::cout << ss.str();
 

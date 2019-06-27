@@ -4,6 +4,7 @@
 #include "jni_wrapper.h"
 #include "../ping/pinger.hpp"
 #include "../dnsquery/dnsquery.h"
+#include "../tracerouter/tracerouter.hpp"
 
 #ifdef __cplusplus
 extern "C" {
