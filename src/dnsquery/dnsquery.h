@@ -16,9 +16,21 @@
 #include <string>
 using namespace std;
 
+#define SOCKET_MAX_IP_COUNT (20)
+struct socket_ipinfo_t
+{
+    int  size;
+//    int  cost;
+//    struct  in_addr dns;
+    string ip[SOCKET_MAX_IP_COUNT];
+};
+int socket_gethostbyname(const char* _host, struct socket_ipinfo_t* _ipinfo, int _timeout /*ms*/, const char* _dnsserver);
+
 #ifdef __cplusplus
 extern "C"{
 #endif
+
+
 /**
  *函数名:    socket_gethostbyname
  *功能: 输入域名，可得到该域名下所对应的IP地址列表
@@ -29,18 +41,8 @@ extern "C"{
  *返回值:		  当返回-1表示查询失败，当返回0则表示查询成功
  *
  */
-#define SOCKET_MAX_IP_COUNT (20)
-
-struct socket_ipinfo_t
-{
-    int  size;
-//    int  cost;
-//    struct  in_addr dns;
-    string ip[SOCKET_MAX_IP_COUNT];
-};
 
 int socket_gethostbyname(const char* _host, struct socket_ipinfo_t* _ipinfo, int _timeout /*ms*/, const char* _dnsserver);
-
 
 #ifdef __cplusplus
 }

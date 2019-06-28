@@ -5,12 +5,6 @@
 
 extern "C" {
 
-void ping(char* host)
-{
-    pinger<> pinger(host, 10, 0, 1, 1);
-}    
-
-
 void TestDNSQuery(const char* host, const char* dnsSer)
 {
     socket_ipinfo_t _ipinfo;

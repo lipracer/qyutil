@@ -47,10 +47,8 @@ QYBaseLogger::QYBaseLogger(QYLogPriority level):m_level(level) {}
 
 QYBaseLogger::~QYBaseLogger() {}
 
-
 int QYBaseLogger::Log(QYCStr module, QYLogPriority level, QYCStr msg)
 {
-    //cout << "QYBaseLogger:" << msg << endl;
     return 0;
 }
 

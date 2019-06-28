@@ -11,6 +11,7 @@
 #include <streambuf>
 #include <chrono>
 #include <vector>
+#include <functional>
 
 #include "net_common/icmp_header.hpp"
 #include "net_common/ipv4_header.hpp"
@@ -209,6 +210,18 @@ public:
     }
     vector<string> _result;
 };
+
+extern "C"
+{    
+/*
+ @param host : host ip (v4)
+ */
+int qy_sync_ping(const char* host, int times, int package_size, int interval/*S*/, int timeout/*S*/);
+
+int qy_async_ping(const char* host, int times, int package_size, int interval/*S*/, int timeout/*S*/);
+
+}
+
 #endif
 
 

@@ -11,7 +11,7 @@ namespace QyUtil
 
 using namespace std;
 
-using QYUtilTask = std::pair<function<void(void)>, function<void(void)>>;
+using QYUtilTask = std::pair<function<int(void)>, function<int(void)>>;
 
 class qyutil
 {

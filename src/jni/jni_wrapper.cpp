@@ -32,10 +32,6 @@ static void test_dns(std::string host)
 JNIEXPORT jint JNICALL Java_com_iqiyi_pizza_react_fragment_PZWelfareCenterFragment_TestDNSQuery(JNIEnv *env, jobject obj, jstring host) 
 {
     const char *host_ = env->GetStringUTFChars(host, 0);
-    function<void(void)> func_1 = std::bind(test_dns, "pizza.iqiyi.com");
-    function<void(void)> func_2 = nullptr;
-    LOGI("-------------------------------------------------------put task");
-    QyUtil::qyutil::getInstance().put_task(make_pair(func_1, func_2));
     env->ReleaseStringUTFChars(host, host_);
     return 0;
 }  

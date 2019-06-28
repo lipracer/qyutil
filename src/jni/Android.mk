@@ -15,6 +15,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../common/asio/include $(LOCAL_PATH)/../../
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../../common/qylog/qyLogMgr.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../../common/qylog/QYLogger.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../dnsquery/dnsquery.cpp
+LOCAL_SRC_FILES += $(LOCAL_PATH)/../ping/pinger.cpp
 #LOCAL_SRC_FILES += $(LOCAL_PATH)/../ping/pinger.hpp
 #LOCAL_SRC_FILES += $(LOCAL_PATH)/../tracerouter/tracerouter.hpp
 LOCAL_SRC_FILES += jni_wrapper.cpp

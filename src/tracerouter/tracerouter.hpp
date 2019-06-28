@@ -7,6 +7,8 @@ func1 : 原生套节子，修改ip协议头部ttl字段
 func2 : 使用setsockopt修改ip字段
  */
 
+#include <vector>
+#include <list>
 #include <string>
 #include <asio/ip/address_v4.hpp>
 
@@ -21,25 +23,25 @@ using namespace NetCommon;
 extern int errno;
 
 const static size_t BUF_LEN = 65536;
-uint16_t ip_chksum(uint16_t initcksum, uint8_t *ptr, int len)
-{
-    unsigned int cksum;
-    int idx;
-    int odd;
-    cksum = (unsigned int) initcksum;
-    odd = len & 1;
-    len -= odd;
-    for (idx = 0; idx < len; idx += 2)
-        cksum += ((unsigned long) ptr[idx] << 8) + ((unsigned long) ptr[idx+1]);
-    
-    if (odd)
-        cksum += ((unsigned long) ptr[idx] << 8);
-    
-    while (cksum >> 16)
-        cksum = (cksum & 0xFFFF) + (cksum >> 16);
-    
-    return cksum;
-}
+//uint16_t ip_chksum(uint16_t initcksum, uint8_t *ptr, int len)
+//{
+//    unsigned int cksum;
+//    int idx;
+//    int odd;
+//    cksum = (unsigned int) initcksum;
+//    odd = len & 1;
+//    len -= odd;
+//    for (idx = 0; idx < len; idx += 2)
+//        cksum += ((unsigned long) ptr[idx] << 8) + ((unsigned long) ptr[idx+1]);
+//    
+//    if (odd)
+//        cksum += ((unsigned long) ptr[idx] << 8);
+//    
+//    while (cksum >> 16)
+//        cksum = (cksum & 0xFFFF) + (cksum >> 16);
+//    
+//    return cksum;
+//}
 
 template<TraceRouterType ProType=TraceRouterType::UDP>
 class TraceRouter
@@ -60,8 +62,18 @@ public:
 
     virtual ~TraceRouter()
     {
-        if(_send_buf) delete [] _send_buf;
-        if(_recv_buf) delete [] _recv_buf;
+        if(_send_buf) 
+        {
+            delete [] _send_buf;
+            _send_buf = nullptr;
+        }
+        if(_recv_buf) 
+        {
+            delete [] _recv_buf;
+            _recv_buf = nullptr;
+        }
+        socket_close(_socket_r);
+        socket_close(_socket_w);
     }   
 
     int start()
@@ -71,7 +83,7 @@ public:
         {
             _socket_w = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
             _socket_r = socket(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
-            if(0 == _socket_w)
+            if(0 == _socket_w || 0 == _socket_r)
             {
                 LOGE("%s", "create socket error!\n");
                 cout << "create socket error!" << endl;
@@ -109,7 +121,12 @@ public:
                     goto EXIT;
                 }
                 string t_ip;
-                explore_router(i, t_ip);
+                int times = 3;
+                while (times--)
+                {
+                    explore_router(i, t_ip);
+                }
+                //到达主机，退出循环
                 if(t_ip == _host)
                 {
                     ret = 0;
@@ -121,7 +138,7 @@ public:
     EXIT:
         return ret;
     }
-    
+#if 0   
     int prepare_ip_udp_packet()
     {
         memset(_send_buf, 0, BUF_LEN);
@@ -140,7 +157,7 @@ public:
         _ip_head->dest_ip = htonl(asio::ip::make_address_v4(_host.c_str()).to_ulong());
         return 0;
     }
-
+#endif
     int explore_router(int index, string& t_ip)
     {
         int ret = 0;
@@ -174,6 +191,7 @@ public:
                 LOGE("index:%d      ********** errno:%d", index, errno);
                 break;
             }
+            //TODO 检查ICMP包是否是路由响应的包、否则重新接收?
             stringbuf buf;
             istream stream(&buf);
             buf.sputn(_recv_buf, ret);
@@ -188,40 +206,22 @@ public:
         return ret;
     }
 
-    int recv_data()
-    {
-
-    }
-    
-    void print_buf()
-    {
-        int i = 0;
-        while (i < sizeof(PROP_IP_HEADER) + sizeof(UDP_HAEDER) + _data_len)
-        {
-            if(i % 16 == 0)
-            {
-                printf("\n");
-            }
-            printf("%02X ", 0x000000ff & _send_buf[i]);
-            ++i;
-        }
-        cout << endl;
-    }
-
 protected:
     string _host;
     char * _send_buf;
     char * _recv_buf;
     RawSocket _socket_w;
     RawSocket _socket_r;
-    PROP_IP_HEADER * _ip_head;
-    UDP_HAEDER * _udp_head;
+    //PROP_IP_HEADER * _ip_head;
+    //UDP_HAEDER * _udp_head;
     int _data_len;
     int _sequence_number;
+
+    vector<list<string>> _router_path;
     
 static const int TraceRouterTimeOut = 5;
-static const unsigned short DefaultPort_S = 38625;
-static const unsigned short DefaultPort_D = 33435;
+//static const unsigned short DefaultPort_S = 38625;
+//static const unsigned short DefaultPort_D = 33435;
 };
 
 #endif
