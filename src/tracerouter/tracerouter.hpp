@@ -3,6 +3,8 @@
 
 /*
 UDP or ICMP
+func1 : 原生套节子，修改ip协议头部ttl字段
+func2 : 使用setsockopt修改ip字段
  */
 
 #include <string>
@@ -56,14 +58,11 @@ public:
         start();
     }
 
-
     virtual ~TraceRouter()
     {
         if(_send_buf) delete [] _send_buf;
         if(_recv_buf) delete [] _recv_buf;
-    }
-    
-    
+    }   
 
     int start()
     {
@@ -152,7 +151,7 @@ public:
 
             if(0 >= (ret = inet_pton(AF_INET, _host.c_str(), &addr.sin_addr)))
             {
-                LOGE("%s", "invalid address!\n");
+                LOGE("invalid address!\n");
                 break;
             }
             addr.sin_port = htons(DefaultPort_D);
@@ -162,7 +161,7 @@ public:
             ret = sendto(_socket_w, _send_buf, body.length(), 0, (sockaddr*)&addr, sizeof(addr));
             if(ret <= 0)
             {
-                LOGD("send fail %d host:%s errno:%d", ret, _host.c_str(), errno);
+                LOGD("send fail ret:%d host:%s errno:%d", ret, _host.c_str(), errno);
                 break;
             }
             memset(_recv_buf, 0, BUF_LEN);
@@ -172,6 +171,7 @@ public:
             {
                 //LOGD("******* recv error!");
                 cout << index << "      **********" << endl;
+                LOGE("index:%d      ********** errno:%d", index, errno);
                 break;
             }
             stringbuf buf;
@@ -182,6 +182,7 @@ public:
             stream >> ipv4_hdr >> icmp_hdr;
             t_ip = ipv4_hdr.source_address().to_string();
             cout << index << "      router addr:" << ipv4_hdr.source_address().to_string() << endl;
+            LOGE("index:%d      router addr:%s", index, ipv4_hdr.source_address().to_string().c_str());
         }
         while (false);
         return ret;

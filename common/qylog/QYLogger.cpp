@@ -39,7 +39,7 @@ thread::id GetThreadId()
 string format_msg(QYCStr module, QYLogPriority level, QYCStr msg)
 {
     stringstream ss;
-    ss << "[m:" << module << "]" << "[ts:" << GetTimePoint() << "]" << "[th:" << this_thread::get_id() << "]" << "[" << LogLevelInfo[(int)level] << "]" << msg;
+    ss << "[m:" << module << "]" << "[ts:" << GetTimePoint() << "]" << "[th:" << this_thread::get_id() << "]" << "[" << LogLevelInfo[(int)level] << "]" << msg << endl;
     return ss.str();
 }
 
@@ -67,7 +67,8 @@ int QYLoggerConsole::Log(QYCStr module, QYLogPriority level, QYCStr msg)
         chrono::system_clock::time_point now = chrono::system_clock::now();
         time_t now_c = chrono::system_clock::to_time_t(now);
         //auto cstime = localtime(&now_c);
-        const char* msg__ = format_msg(module, level, msg).c_str();
+        string tmp(std::move(format_msg(module, level, msg)));
+        const char* msg__ = tmp.c_str();//直接取c_str此时返回的str已经释放
 #ifdef __ANDROID__        
         //__android_log_print((int)QYLogPriority::ERROR, "QYUtil-Log", "level:%d m_level:%d %s",level, m_level, msg__);
         __android_log_print((int)level, module, "%s", msg__);

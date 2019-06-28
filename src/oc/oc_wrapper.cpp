@@ -1,8 +1,9 @@
+#include "../../include/qylog.h"
 #include "../ping/pinger.hpp"
 #include "../dnsquery/dnsquery.h"
-#include "../../include/qylog.h"
+#include "../tracerouter/tracerouter.hpp"
 
-//extern "C" {
+extern "C" {
 
 void ping(char* host)
 {
@@ -21,6 +22,7 @@ void TestDNSQuery(const char* host, const char* dnsSer)
         LOGD("query ip:%s", _ipinfo.ip[i].c_str());
         pinger<> pinger(_ipinfo.ip[i].c_str(), 10, 0, 1, 1);
     }
+    TraceRouter<> trace("115.239.210.27");
 }
     
-//}
+}

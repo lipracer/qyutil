@@ -76,5 +76,7 @@ static_assert(sizeof(UDP_HAEDER) == UDP_HAEDER::Length, "UDP_HAEDER length error
 
 typedef int RawSocket;
 
+inline void socket_close(RawSocket sock) { close(sock); } //window 与 linux close不同
+
 };
 #endif

@@ -33,6 +33,7 @@
 
 #include <asio/ip/address_v4.hpp>
 #include "../../include/qylog.h"
+#include "net_common/net_common.h"
 
 typedef int SOCKET;
 
@@ -117,8 +118,6 @@ static int            RecvWithinTime(int _fd, char* _buf, size_t _buf_n, struct 
 static void           FreeAll(struct RES_RECORD* _answers);
 static bool           isValidIpAddress(const char* _ipaddress);
 
-inline void socket_close(SOCKET sock) { close(sock); } //window 与 linux close不同
-
 /**
  *函数名:    socket_gethostbyname
  *功能: 输入域名，可得到该域名下所对应的IP地址列表
@@ -159,7 +158,7 @@ int socket_gethostbyname(const char* _host, socket_ipinfo_t* _ipinfo, int _timeo
 
     if (dns_servers.empty()) {
         LOGE("No dns servers error.");
-        ::socket_close(sock);
+        NetCommon::socket_close(sock);
         return -1;
     }
 
@@ -234,7 +233,7 @@ int socket_gethostbyname(const char* _host, socket_ipinfo_t* _ipinfo, int _timeo
 
     FreeAll(answers);
     LOGI("close fd in dnsquery,sock=%d", sock);
-    ::socket_close(sock);
+    NetCommon::socket_close(sock);
     return ret;  //* 查询DNS服务器超时 
 }
 
