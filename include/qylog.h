@@ -20,6 +20,7 @@ void __CPP_LOG(int level, Args ...args)
     QYLogCWrapper(level, TAG, ss.str().c_str());
 }
 
+//only for cpp
 #define _qydebug(...) __CPP_LOG(3, __VA_ARGS__) // 定义LOGD类型
 #define _qyinfo(...) __CPP_LOG(4, __VA_ARGS__) // 定义LOGI类型
 #define _qywarn(...) __CPP_LOG(5, __VA_ARGS__) // 定义LOGW类型
