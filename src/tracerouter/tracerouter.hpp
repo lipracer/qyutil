@@ -62,14 +62,17 @@ public:
         if(_send_buf) delete [] _send_buf;
         if(_recv_buf) delete [] _recv_buf;
     }
+    
+    
 
     int start()
     {
         int ret = 0;
         do
         {
-            _socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-            if(0 == _socket)
+            _socket_w = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+            _socket_r = socket(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
+            if(0 == _socket_w)
             {
                 LOGE("%s", "create socket error!\n");
                 cout << "create socket error!" << endl;
@@ -85,12 +88,12 @@ public:
             timeval timeout;
             timeout.tv_sec = TraceRouterTimeOut;
             timeout.tv_usec = 0;
-            if(0 > (ret = setsockopt(_socket, SOL_SOCKET, SO_RCVBUF, &BUF_LEN, sizeof(BUF_LEN))))
+            if(0 > (ret = setsockopt(_socket_r, SOL_SOCKET, SO_RCVBUF, &BUF_LEN, sizeof(BUF_LEN))))
             {
                 LOGE("set socket recv timeout error!!!");
                 break;
             }
-            if(0 > (ret = setsockopt(_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout))))
+            if(0 > (ret = setsockopt(_socket_r, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout))))
             {
                 LOGE("set socket recv timeout error!!!");
                 break;
@@ -101,7 +104,7 @@ public:
 //                _ip_head->ttl = (0XFF & i);
 //                _ip_head->check_sum = htons(ip_chksum(0, (uint8_t*)_send_buf, sizeof(PROP_IP_HEADER)));
                 int ttl = 0XFF & i;
-                if(0 > (ret = setsockopt(_socket, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl))))
+                if(0 > (ret = setsockopt(_socket_w, IPPROTO_IP, IP_TTL, &ttl, sizeof(ttl))))
                 {
                     LOGE("set socket IP_TTL error:%d!!!", errno);
                     goto EXIT;
@@ -156,7 +159,7 @@ public:
             
             string body = "xxx";
             
-            ret = sendto(_socket, _send_buf, body.length(), 0, (sockaddr*)&addr, sizeof(addr));
+            ret = sendto(_socket_w, _send_buf, body.length(), 0, (sockaddr*)&addr, sizeof(addr));
             if(ret <= 0)
             {
                 LOGD("send fail %d host:%s errno:%d", ret, _host.c_str(), errno);
@@ -164,7 +167,7 @@ public:
             }
             memset(_recv_buf, 0, BUF_LEN);
             socklen_t addr_len = 0;
-            ret = recvfrom(_socket, _recv_buf, BUF_LEN, 0, (struct sockaddr*)&addr, &addr_len);
+            ret = recvfrom(_socket_r, _recv_buf, BUF_LEN, 0, (struct sockaddr*)&addr, &addr_len);
             if(ret <= 0)
             {
                 //LOGD("******* recv error!");
@@ -208,7 +211,8 @@ protected:
     string _host;
     char * _send_buf;
     char * _recv_buf;
-    RawSocket _socket;
+    RawSocket _socket_w;
+    RawSocket _socket_r;
     PROP_IP_HEADER * _ip_head;
     UDP_HAEDER * _udp_head;
     int _data_len;
