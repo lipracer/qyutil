@@ -23,6 +23,7 @@ using namespace NetCommon;
 extern int errno;
 
 const static size_t BUF_LEN = 65536;
+const static int    EveryTTLExpCount = 3;
 //uint16_t ip_chksum(uint16_t initcksum, uint8_t *ptr, int len)
 //{
 //    unsigned int cksum;
@@ -43,7 +44,14 @@ const static size_t BUF_LEN = 65536;
 //    return cksum;
 //}
 
-template<TraceRouterType ProType=TraceRouterType::UDP>
+//c++的format非常恶心
+#define ScreenOutput(fmt, ...)  do{ \
+    memset(_output_buf, 0, OutputBufLen); \
+    sprintf(_output_buf, fmt,  __VA_ARGS__); \
+    __all_result += _output_buf; \
+} while(false);
+
+template<TraceRouterType ProType=TraceRouterType::UDP, int IS_ANDROID=0>
 class TraceRouter
 {
 public:
@@ -51,8 +59,9 @@ public:
     TraceRouter(TraceRouter&& other)=delete;
     TraceRouter& operator=(TraceRouter& other)=delete;
     TraceRouter& operator=(TraceRouter&& other)=delete;
-    TraceRouter(string host) : _host(host)
+    TraceRouter(string host, CheckOutput output=DefauleOutPut) : _host(host), _output(output)
     {
+        LOGI("TraceRouter contruct");
         _send_buf = new char[BUF_LEN];
         _recv_buf = new char[BUF_LEN];
         _data_len = 24;
@@ -62,6 +71,7 @@ public:
 
     virtual ~TraceRouter()
     {
+        LOGI("TraceRouter ~TraceRouter");
         if(_send_buf) 
         {
             delete [] _send_buf;
@@ -78,6 +88,7 @@ public:
 
     int start()
     {
+        LOGI("TraceRouter start");
         int ret = 0;
         do
         {
@@ -121,12 +132,8 @@ public:
                     goto EXIT;
                 }
                 string t_ip;
-                int times = 3;
-                while (times--)
-                {
-                    explore_router(i, t_ip);
-                }
                 //到达主机，退出循环
+                explore_router(i, t_ip);
                 if(t_ip == _host)
                 {
                     ret = 0;
@@ -160,9 +167,11 @@ public:
 #endif
     int explore_router(int index, string& t_ip)
     {
+        LOGI("TraceRouter explore_router");
         int ret = 0;
         do
         {
+            ScreenOutput("%2d ", index);///////////////////////
             sockaddr_in addr;
             memset(&addr, 0, sizeof(addr));
 
@@ -172,35 +181,60 @@ public:
                 break;
             }
             addr.sin_port = htons(DefaultPort_D);
+            char data[50] = { 0 };
             
-            string body = "xxx";
-            
-            ret = sendto(_socket_w, _send_buf, body.length(), 0, (sockaddr*)&addr, sizeof(addr));
-            if(ret <= 0)
+            int times = EveryTTLExpCount;
+            while (times--)
             {
-                LOGD("send fail ret:%d host:%s errno:%d", ret, _host.c_str(), errno);
-                break;
+                auto start_pt =  std::chrono::system_clock::now();
+                LOGI("TraceRouter sendto");
+                ret = sendto(_socket_w, _send_buf, sizeof(data), 0, (sockaddr*)&addr, sizeof(addr));
+                if(ret <= 0)
+                {
+                    LOGE("send fail ret:%d host:%s errno:%d", ret, _host.c_str(), errno);
+                    ScreenOutput("traceroute: %s %d chars, ret=%d", _host.c_str(), (int)sizeof(data), ret);////////////////
+                    continue;
+                }
+                memset(_recv_buf, 0, BUF_LEN);
+                socklen_t addr_len = 0;
+                LOGI("TraceRouter recvfrom");
+                ret = recvfrom(_socket_r, _recv_buf, BUF_LEN, 0, (struct sockaddr*)&addr, &addr_len);
+                auto end_pt =  std::chrono::system_clock::now();
+                if(ret <= 0)
+                {
+                    LOGI("TraceRouter recvfrom ret: errno:%d", ret, errno);
+                    ScreenOutput("%s", " *");
+                    continue;
+                }
+                LOGI("TraceRouter recvfrom ret:%d", ret);
+                //TODO 检查ICMP包是否是路由响应的包、否则重新接收?
+                stringbuf buf;
+                istream stream(&buf);
+                buf.sputn(_recv_buf, ret);
+                ipv4_header ipv4_hdr;
+                icmp_header icmp_hdr;
+                stream >> ipv4_hdr >> icmp_hdr;
+                string cur_ip = ipv4_hdr.source_address().to_string();
+                if(t_ip == cur_ip)
+                {
+                    
+                }
+                else
+                {
+                    //printf %s how to align ????
+                    t_ip = cur_ip;
+                    if(EveryTTLExpCount - 1 != times)
+                    {
+                        ScreenOutput("%s", "\n   ");
+                        
+                    }
+                    ScreenOutput(" %s (%s)", t_ip.c_str(), t_ip.c_str());
+                }
+                int duration = static_cast<int>((chrono::duration_cast<chrono::microseconds>(end_pt - start_pt)).count());
+                ScreenOutput("  %0.2fms", duration / (float)1000);
             }
-            memset(_recv_buf, 0, BUF_LEN);
-            socklen_t addr_len = 0;
-            ret = recvfrom(_socket_r, _recv_buf, BUF_LEN, 0, (struct sockaddr*)&addr, &addr_len);
-            if(ret <= 0)
-            {
-                //LOGD("******* recv error!");
-                cout << index << "      **********" << endl;
-                LOGE("index:%d      ********** errno:%d", index, errno);
-                break;
-            }
-            //TODO 检查ICMP包是否是路由响应的包、否则重新接收?
-            stringbuf buf;
-            istream stream(&buf);
-            buf.sputn(_recv_buf, ret);
-            ipv4_header ipv4_hdr;
-            icmp_header icmp_hdr;
-            stream >> ipv4_hdr >> icmp_hdr;
-            t_ip = ipv4_hdr.source_address().to_string();
-            cout << index << "      router addr:" << ipv4_hdr.source_address().to_string() << endl;
-            LOGE("index:%d      router addr:%s", index, ipv4_hdr.source_address().to_string().c_str());
+            ScreenOutput("%s", "\n");
+          
         }
         while (false);
         return ret;
@@ -218,10 +252,109 @@ protected:
     int _sequence_number;
 
     vector<list<string>> _router_path;
+    CheckOutput _output;
+    char _output_buf[OutputBufLen];
+    string __all_result;
     
 static const int TraceRouterTimeOut = 5;
-//static const unsigned short DefaultPort_S = 38625;
-//static const unsigned short DefaultPort_D = 33435;
+static const unsigned short DefaultPort_S = 38625;
+static const unsigned short DefaultPort_D = 33435;
+};
+
+template<TraceRouterType TRT>
+class TraceRouter<TRT, 1>
+{
+public:
+    TraceRouter(string host, CheckOutput output=DefauleOutPut): _host(host), _output(output)
+    {
+        LOGI("TraceRouter contruct");
+        __fmt_ping_order = string("ping -t %d -c 1 -w 1 ") + _host;
+        for(int i = 1; i < 50; ++i)
+        {
+            string t_ip;
+            explore_router(i, t_ip);
+        }    
+    }
+    ~TraceRouter()
+    {
+        LOGI("TraceRouter destruct");
+        LOGE("%s", __all_result.c_str());//打印不全， 可能是android_log截断了
+    }
+
+    int explore_router(int index, string& t_ip)
+    {
+        ScreenOutput("%2d ", index);
+        int times = 3;
+        while (times--)
+        {
+            string str_result;
+            open_ping_cmd(index, str_result);
+            string ip_;
+            if(process_ping_result(str_result, ip_))
+            {
+                ScreenOutput("%s", " *");
+            }
+            else
+            {                
+                if(ip_ != t_ip)
+                {
+                    t_ip = ip_;
+                    if(times != EveryTTLExpCount - 1)
+                    {
+                        ScreenOutput("%s", "\n   ");
+                    }                    
+                    ScreenOutput(" %s (%s)", t_ip.c_str(), t_ip.c_str());  
+                }                            
+            }
+        }
+        ScreenOutput("%s", "\n");
+        return 0;
+    }
+
+    void open_ping_cmd(int index, string& str_result)
+    {
+        char buf[1024] = { 0 };
+        sprintf(buf, __fmt_ping_order.c_str(), index);
+        FILE* pp = popen(buf, "r");
+        if(!pp)
+        {
+            LOGE("open %s fail", buf);
+        }
+        char line[1024] = { 0 };
+        while (fgets(line, sizeof(line), pp) != NULL)
+        {
+            str_result += line;
+            memset(line, 0, sizeof(line));         
+        }
+        LOGI("%s", str_result.c_str());
+        pclose(pp); 
+    }
+    //is timeout
+    bool process_ping_result(string& result, string& ip)
+    {
+        //_qyinfo(result);
+        string::size_type pos = result.find("From ");
+        if(std::string::npos != pos)
+        {
+            string ip_str = result.substr(pos + 5);
+            //_qyerro(ip_str);
+            string::size_type space_pos = ip_str.find(": ");
+            if(std::string::npos != space_pos)
+            {
+                ip = ip_str.substr(0, space_pos);
+                return false;
+            }
+        }
+        return true;
+    }
+    vector<string> _result;
+    CheckOutput _output;
+    char _output_buf[OutputBufLen];
+    string _host;
+    string __fmt_ping_order;
+    string __all_result;
+    string __cur_ip;
+    
 };
 
 #endif

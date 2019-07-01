@@ -7,6 +7,10 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
+#include <functional>
+#include <string>
+using namespace std;
+
 typedef unsigned char  u8;
 typedef unsigned short u16;
 typedef unsigned int   u32;
@@ -79,4 +83,11 @@ typedef int RawSocket;
 inline void socket_close(RawSocket sock) { close(sock); } //window 与 linux close不同
 
 };
+
+//cpp string 转来转去太恶心
+using CheckOutput = std::function<void(const char*)>;
+void __DefauleOutput(const char* result);
+static const CheckOutput DefauleOutPut = __DefauleOutput;
+static const int OutputBufLen = 1024;
+
 #endif

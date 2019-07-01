@@ -42,7 +42,7 @@ extern "C"{
  *
  */
 
-int socket_gethostbyname(const char* _host, struct socket_ipinfo_t* _ipinfo, int _timeout /*ms*/, const char* _dnsserver);
+//int socket_gethostbyname(const char* _host, struct socket_ipinfo_t* _ipinfo, int _timeout /*ms*/, const char* _dnsserver);
 
 #ifdef __cplusplus
 }

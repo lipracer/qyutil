@@ -14,6 +14,7 @@
 		3343EBA922C312E5000C12FA /* QYLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA222C312E5000C12FA /* QYLogger.cpp */; };
 		3343EBAB22C312E5000C12FA /* qyLogMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA422C312E5000C12FA /* qyLogMgr.cpp */; };
 		3379EC5A22C4634D00D2EE2E /* qyutil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3379EC5922C4634D00D2EE2E /* qyutil.cpp */; };
+		33B91E5322C9DC240027208F /* net_common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33B91E5222C9DC240027208F /* net_common.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,6 +39,7 @@
 		3343EBA422C312E5000C12FA /* qyLogMgr.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = qyLogMgr.cpp; path = ../../common/qylog/qyLogMgr.cpp; sourceTree = "<group>"; };
 		3379EC5922C4634D00D2EE2E /* qyutil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qyutil.cpp; path = ../../src/qyutil.cpp; sourceTree = "<group>"; };
 		3379EC5D22C46D1800D2EE2E /* tracerouter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = tracerouter.hpp; path = ../../src/tracerouter/tracerouter.hpp; sourceTree = "<group>"; };
+		33B91E5222C9DC240027208F /* net_common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = net_common.cpp; path = ../../common/net_common/net_common.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 		3343EB8B22C312AA000C12FA = {
 			isa = PBXGroup;
 			children = (
+				33B91E5222C9DC240027208F /* net_common.cpp */,
 				3343EBA122C312E5000C12FA /* dnsquery.cpp */,
 				3343EBA022C312E5000C12FA /* oc_wrapper.cpp */,
 				3343EB9E22C312E5000C12FA /* pinger.hpp */,
@@ -144,6 +147,7 @@
 				3343EBA822C312E5000C12FA /* dnsquery.cpp in Sources */,
 				3343EBA922C312E5000C12FA /* QYLogger.cpp in Sources */,
 				3343EBAB22C312E5000C12FA /* qyLogMgr.cpp in Sources */,
+				33B91E5322C9DC240027208F /* net_common.cpp in Sources */,
 				3343EB9822C312AA000C12FA /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

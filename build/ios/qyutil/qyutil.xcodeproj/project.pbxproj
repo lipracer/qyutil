@@ -13,6 +13,8 @@
 		338B3F1822C257EA00177A1A /* qyLogMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 338B3F1022C257EA00177A1A /* qyLogMgr.cpp */; };
 		338B3F1922C257EA00177A1A /* dnsquery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 338B3F1122C257EA00177A1A /* dnsquery.cpp */; };
 		338B3F1A22C257EA00177A1A /* pinger.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 338B3F1222C257EA00177A1A /* pinger.hpp */; };
+		33B91E5522C9E99E0027208F /* net_common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33B91E5422C9E99E0027208F /* net_common.cpp */; };
+		33B91E5722C9E9B90027208F /* pinger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33B91E5622C9E9B90027208F /* pinger.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +37,9 @@
 		338B3F1022C257EA00177A1A /* qyLogMgr.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = qyLogMgr.cpp; path = ../../../common/qylog/qyLogMgr.cpp; sourceTree = "<group>"; };
 		338B3F1122C257EA00177A1A /* dnsquery.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = dnsquery.cpp; path = ../../../src/dnsquery/dnsquery.cpp; sourceTree = "<group>"; };
 		338B3F1222C257EA00177A1A /* pinger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = pinger.hpp; path = ../../../src/ping/pinger.hpp; sourceTree = "<group>"; };
+		33B91E5422C9E99E0027208F /* net_common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = net_common.cpp; path = ../../../common/net_common/net_common.cpp; sourceTree = "<group>"; };
+		33B91E5622C9E9B90027208F /* pinger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pinger.cpp; path = ../../../src/ping/pinger.cpp; sourceTree = "<group>"; };
+		33B91E5822C9E9C30027208F /* tracerouter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = tracerouter.hpp; path = ../../../src/tracerouter/tracerouter.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,9 +56,12 @@
 		338B3EF722C2578200177A1A = {
 			isa = PBXGroup;
 			children = (
+				33B91E5422C9E99E0027208F /* net_common.cpp */,
 				338B3F1122C257EA00177A1A /* dnsquery.cpp */,
 				338B3F0E22C257EA00177A1A /* oc_wrapper.cpp */,
+				33B91E5622C9E9B90027208F /* pinger.cpp */,
 				338B3F1222C257EA00177A1A /* pinger.hpp */,
+				33B91E5822C9E9C30027208F /* tracerouter.hpp */,
 				338B3F0C22C257EA00177A1A /* QYLogger.cpp */,
 				338B3F1022C257EA00177A1A /* qyLogMgr.cpp */,
 				338B3F0F22C257EA00177A1A /* qyutil.cpp */,
@@ -133,9 +141,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33B91E5722C9E9B90027208F /* pinger.cpp in Sources */,
 				338B3F1422C257EA00177A1A /* QYLogger.cpp in Sources */,
 				338B3F1622C257EA00177A1A /* oc_wrapper.cpp in Sources */,
 				338B3F1722C257EA00177A1A /* qyutil.cpp in Sources */,
+				33B91E5522C9E99E0027208F /* net_common.cpp in Sources */,
 				338B3F1822C257EA00177A1A /* qyLogMgr.cpp in Sources */,
 				338B3F1922C257EA00177A1A /* dnsquery.cpp in Sources */,
 				338B3F1A22C257EA00177A1A /* pinger.hpp in Sources */,

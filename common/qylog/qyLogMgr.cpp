@@ -13,7 +13,9 @@ void QYLog(QYCStr module, QYLogPriority level, QYCStr msg)
 
 void QYLogCWrapper(int level, QYCStr module, QYCStr format, ...)
 {
-    char buf[1024] = { 0 };
+    //TODO
+    //unsafe replace nsprintf
+    char buf[4096] = { 0 };
     va_list ap;     
     va_start(ap, format);
     vsprintf(buf, format, ap);

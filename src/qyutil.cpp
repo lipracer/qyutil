@@ -2,49 +2,33 @@
 #include <chrono>
 #include <iostream>
 
-#include "qylog.h"
+#include "ping/pinger.hpp"
+#include "dnsquery/dnsquery.h"
+#include "tracerouter/tracerouter.hpp"
 
 using namespace QyUtil;
 using namespace std;
 
-qyutil::qyutil(/* args */)
+int NetworkDiagnosis(string HostName, string dnsServer)
 {
-    LOGI("construct");
-    __th = new thread(&qyutil::run, this);
-    __th->detach();
-}
-
-qyutil::~qyutil()
-{
-    delete __th;
-}
-
-void qyutil::put_task(QYUtilTask task)
-{
-    lock_guard<mutex> tMtx(__cvmtx);
-    __msg_queue.push_back(task);
-    __cvar.notify_one();
-}
-
-void qyutil::run()
-{
-    while (true)
+    LOGI("call:%s host:%s", "NetworkDiagnosis", HostName.c_str());
+    int ret = 0;
+    socket_ipinfo_t ipInfo;
+    ipInfo.size = 0;
+    ret = socket_gethostbyname(HostName.c_str(), &ipInfo,  1000/*ms*/, dnsServer.c_str());//
+    if(ret !=0 )
     {
-        unique_lock<mutex> unlock(__cvmtx);
-        if(__msg_queue.empty())
-        {
-            //block
-            __cvar.wait(unlock, [&](){ return !__msg_queue.empty(); });
-        }
-        auto tmp_task = *__msg_queue.begin();
-        __msg_queue.pop_front();
-        unlock.unlock();
-        
-        if(tmp_task.first)
-        {
-            tmp_task.first();
-            if(tmp_task.second) tmp_task.second();
-        }
+        LOGE("query:%s fail!!!", HostName.c_str());
+        return ret;
     }
-}
+    for (size_t i = 0; i < ipInfo.size; i++)
+    {
+#ifndef __ANDROID__
+#define __ANDROID__ (0)
+#endif
 
+        pinger<1, __ANDROID__> pinger(ipInfo.ip[i].c_str(), 4, 0, 1, 0);
+        TraceRouter<TraceRouterType::UDP, __ANDROID__> tr(ipInfo.ip[i]);
+    }
+    return ret;    
+}

@@ -15,26 +15,21 @@
 
 #include "net_common/icmp_header.hpp"
 #include "net_common/ipv4_header.hpp"
+#include "net_common/net_common.h"
 
 #include "qyutil.h"
 #include "qylog.h"
 
 
 using namespace std;
-
-typedef int RawSocket;
-
-static unsigned short __getpid()
-{
-    return static_cast<unsigned short>(::getpid());
-}
+using namespace NetCommon;
 
 template<int IP_TYPE=IPPROTO_ICMP, int IS_ANDROID=0>
 class pinger
 {
 public:
-    pinger(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/) : \
-    _host(host), _package_size(package_size), _interval(interval), _timeout(timeout), _sequence_number(0)
+    pinger(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/, CheckOutput output=DefauleOutPut) : \
+    _host(host), _package_size(package_size), _interval(interval), _timeout(timeout), _sequence_number(0), _output(output)
     {
         _times = times == 0 ? 4 : times;
         _send_buf = new char[send_len];
@@ -67,6 +62,7 @@ public:
             for (int i = 0; i < _times; ++i)
             {
                 send_data();
+                //ScreenOutput("%s", "\n");
             }
         }
         while (false);
@@ -127,7 +123,7 @@ public:
             read_ret = recvfrom(_socket, _recv_buf, recv_len, 0, (struct sockaddr*)&addr, &addr_len);
             if(read_ret < 0)
             {
-                LOGI("ping host:%s timeout", _host.c_str());
+                //ScreenOutput("ping host:%s timeout", _host.c_str());
                 break;
             }
             stringbuf buf;
@@ -150,11 +146,8 @@ public:
                 << ": icmp_seq=" << icmp_hdr.sequence_number()
                 << ", ttl=" << ipv4_hdr.time_to_live()
                 << ", time=" << ((chrono::duration_cast<chrono::milliseconds>)(chrono::steady_clock::now() - _send_time)).count() << "ms";
-                std::cout << ss.str();
-
-                LOGD("%s", _host.c_str());
-                LOGD("%s", ss.str().c_str());            
                 
+                //ScreenOutput("%s", ss.str().c_str());
             }
         }
         while(false);
@@ -174,6 +167,9 @@ public:
     char * _recv_buf;
     const size_t send_len = 1024;
     const size_t recv_len = 65536;
+    
+    CheckOutput _output;
+    char *_output_buf;
 };
 
 template<int IP_TYPE>
@@ -216,9 +212,9 @@ extern "C"
 /*
  @param host : host ip (v4)
  */
-int qy_sync_ping(const char* host, int times, int package_size, int interval/*S*/, int timeout/*S*/);
-
-int qy_async_ping(const char* host, int times, int package_size, int interval/*S*/, int timeout/*S*/);
+//int qy_sync_ping(const char* host, int times, int package_size, int interval/*S*/, int timeout/*S*/);
+//
+//int qy_async_ping(const char* host, int times, int package_size, int interval/*S*/, int timeout/*S*/);
 
 }
 

@@ -1,6 +1,8 @@
 import os
 import shutil
 
+ProjectDir = '/Users/lipracer/SourceCode/first/pizza-android/app/src/main/jniLibs/armeabi-v7a'
+
 def rm_path(path):
     if os.path.exists(path):
         print("rm:" + path)
@@ -28,6 +30,9 @@ def build():
         
     shutil.move("../libs", "../../build/android")
     shutil.move("../obj", "../../build/android")
+    if os.path.exists(ProjectDir):
+        shutil.copy("../../build/android/libs/armeabi-v7a/libqyutil.so", ProjectDir)
+        print("copy to project complete.")
     
 def build_clear():
     rm_path("../libs")

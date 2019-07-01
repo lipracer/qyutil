@@ -48,6 +48,6 @@ void TestDNSQuery(const char* host, const char* dnsSer);
 
 int main(int argc, char * argv[])
 {
-    TraceRouter<> tr("115.239.210.27");
+    NetworkDiagnosis("www.baidu.com", "10.16.169.127");
     return 0;
 }

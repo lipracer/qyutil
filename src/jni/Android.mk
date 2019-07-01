@@ -10,14 +10,16 @@ LOCAL_MODULE_PATH := $(LOCAL_MODULE)
 
 LOCAL_CFLAGS += -DASIO_STANDALONE
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../common/asio/include $(LOCAL_PATH)/../../common $(LOCAL_PATH)/../../include
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../common/asio/include  
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../common
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../include
 
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../../common/qylog/qyLogMgr.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../../common/qylog/QYLogger.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../dnsquery/dnsquery.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../ping/pinger.cpp
-#LOCAL_SRC_FILES += $(LOCAL_PATH)/../ping/pinger.hpp
 #LOCAL_SRC_FILES += $(LOCAL_PATH)/../tracerouter/tracerouter.hpp
+LOCAL_SRC_FILES += $(LOCAL_PATH)/../../common/net_common/net_common.cpp
 LOCAL_SRC_FILES += jni_wrapper.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../qyutil.cpp
 
