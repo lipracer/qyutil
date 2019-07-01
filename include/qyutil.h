@@ -5,6 +5,7 @@
 #include <list>
 #include <functional>
 #include <condition_variable>
+#include <memory>
 #include "qylog.h"
 
 namespace QyUtil
@@ -24,12 +25,15 @@ public:
     qyutil(/* args */)
     {
         LOGI("construct");
-        __th = new thread(&qyutil::run, this);
-        __th->detach();
+        for(int i = 0; i < nThread; ++i)
+        {
+            __th[i] = make_shared<thread>(&qyutil::run, this);
+            __th[i]->detach();
+        }
     }
     ~qyutil()
     {
-            delete __th;
+            // delete [] __th;
     }
     void run()
     {
@@ -59,7 +63,7 @@ public:
         __cvar.notify_one();
     }
 private:
-    thread* __th;
+    shared_ptr<thread>  __th[nThread];
     list<QYUtilTask> __msg_queue;
     condition_variable __cvar;
     mutex __cvmtx;
