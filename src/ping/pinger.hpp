@@ -28,7 +28,7 @@ template<int IP_TYPE=IPPROTO_ICMP, int IS_ANDROID=0>
 class pinger
 {
 public:
-    pinger(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/, shared_ptr<result_output> output) : \
+    pinger(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/, shared_ptr<result_output>& output) : \
     _host(host), _package_size(package_size), _interval(interval), _timeout(timeout), _sequence_number(0), _output(output)
     {
         _times = times == 0 ? 4 : times;
@@ -175,7 +175,7 @@ template<int IP_TYPE>
 class pinger<IP_TYPE, 1>
 {
 public:
-    pinger(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/, shared_ptr<result_output> output) : _output(output)
+    pinger(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/, shared_ptr<result_output>& output) : _output(output)
     {
         stringstream ss;
         //int index = snprintf(cmd, 256, "ping -c %d -i %d -w %d", _querycount, interval, timeout);
@@ -323,7 +323,7 @@ template<int IP_TYPE>
 class pinger<IP_TYPE, 2>
 {
 public:
-    pinger(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/, shared_ptr<result_output> output) : \
+    pinger(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/, shared_ptr<result_output>& output) : \
     _host(host), _package_size(package_size), _interval(interval), _timeout(timeout), _output(output)
     {
         try
