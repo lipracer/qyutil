@@ -8,6 +8,13 @@
 #include <memory>
 #include "qylog.h"
 
+#ifndef __ANDROID__
+#define __PLATFORM__ (0)
+#else
+#define __PLATFORM__ (1)
+#endif
+
+using namespace std;
 namespace QyUtil
 {
 using QYUtilTask = std::pair<function<int(void)>, function<int(void)>>;
@@ -27,7 +34,7 @@ public:
         LOGI("construct");
         for(int i = 0; i < nThread; ++i)
         {
-            __th[i] = make_shared<thread>(&qyutil::run, this);
+            __th[i] = make_shared<std::thread>(&qyutil::run, this);
             __th[i]->detach();
         }
     }
@@ -63,7 +70,7 @@ public:
         __cvar.notify_one();
     }
 private:
-    shared_ptr<thread>  __th[nThread];
+    shared_ptr<std::thread>  __th[nThread];
     list<QYUtilTask> __msg_queue;
     condition_variable __cvar;
     mutex __cvmtx;

@@ -11,6 +11,8 @@ using namespace std;
 
 int NetworkDiagnosis(string HostName, string dnsServer)
 {
+    shared_ptr<result_output> output = make_shared<result_output>();
+    result_output& _output = *output;
     LOGI("call:%s host:%s", "NetworkDiagnosis", HostName.c_str());
     int ret = 0;
     socket_ipinfo_t ipInfo;
@@ -21,14 +23,15 @@ int NetworkDiagnosis(string HostName, string dnsServer)
         LOGE("query:%s fail!!!", HostName.c_str());
         return ret;
     }
+    (*output)("dns query %s ip list:\n", HostName.c_str());
     for (size_t i = 0; i < ipInfo.size; i++)
     {
-#ifndef __ANDROID__
-#define __ANDROID__ (0)
-#endif
-
-        pinger<1, __ANDROID__> pinger(ipInfo.ip[i].c_str(), 4, 0, 1, 0);
-        TraceRouter<TraceRouterType::UDP, __ANDROID__> tr(ipInfo.ip[i]);
+        _output("%s\n", ipInfo.ip[i].c_str());
+    }
+    for (size_t i = 0; i < ipInfo.size; i++)
+    {
+        pinger<1, __PLATFORM__> pinger(ipInfo.ip[i].c_str(), 4, 0, 1, 0, output);
+        TraceRouter<TraceRouterType::UDP, __PLATFORM__> tr(ipInfo.ip[i], output);
     }
     return ret;    
 }

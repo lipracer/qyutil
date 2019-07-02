@@ -25,7 +25,7 @@ void QYLogCWrapper(int level, QYCStr module, QYCStr format, ...)
 
 QYLogMgr::QYLogMgr() : m_isInit(false),m_log_mode(QYLogMode::deft)
 {
-    m_logger = new QYLoggerConsole(QYLogPriority::UNKNOWN);
+    m_logger = new QYLoggerConsole(QYLogPriority::INFO);
 }
 
 QYLogMgr::~QYLogMgr() 

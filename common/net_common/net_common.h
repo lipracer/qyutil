@@ -9,6 +9,7 @@
 
 #include <functional>
 #include <string>
+#include <sstream>
 using namespace std;
 
 typedef unsigned char  u8;
@@ -83,11 +84,23 @@ typedef int RawSocket;
 inline void socket_close(RawSocket sock) { close(sock); } //window 与 linux close不同
 
 };
-
-//cpp string 转来转去太恶心
-using CheckOutput = std::function<void(const char*)>;
-void __DefauleOutput(const char* result);
-static const CheckOutput DefauleOutPut = __DefauleOutput;
 static const int OutputBufLen = 1024;
+    
+class result_output
+{
+public:
+    result_output();
+    virtual ~result_output();
+    virtual void operator()(const char* fmt, ...);
+    
+protected:
+    char *_buf;
+    stringstream _ss;
+};
+
+#define CommonOutPut(...) do{\
+if(_output) (*_output)(__VA_ARGS__);\
+}\
+while(false);
 
 #endif

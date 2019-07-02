@@ -1,22 +1,15 @@
-#include "../../include/qylog.h"
-#include "../ping/pinger.hpp"
-#include "../dnsquery/dnsquery.h"
-#include "../tracerouter/tracerouter.hpp"
+#include "qylog.h"
+#include "qyutil.h"
 
 extern "C" {
 
-void TestDNSQuery(const char* host, const char* dnsSer)
+void OC_NetworkDiagnosis(const char* host, const char* dnsSer)
 {
-    socket_ipinfo_t _ipinfo;
-    _ipinfo.size = 0;
-    socket_gethostbyname(host, &_ipinfo, 3000, dnsSer);
-    
-    for(int i = 0; i < _ipinfo.size ; ++i)
-    {
-        LOGD("query ip:%s", _ipinfo.ip[i].c_str());
-        pinger<> pinger(_ipinfo.ip[i].c_str(), 10, 0, 1, 1);
-    }
-    TraceRouter<> trace("115.239.210.27");
+    std::string host_ = host;
+    function<int(void)> fun_1 = std::bind(NetworkDiagnosis, host_, "10.16.169.127");
+    decltype(fun_1) fun_2 = nullptr;
+    auto task = make_pair(fun_1, fun_2);
+    QyUtil::qyutil<1>::getInstance().put_task(task);
 }
     
 }

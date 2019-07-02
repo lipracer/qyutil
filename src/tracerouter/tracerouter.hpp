@@ -24,6 +24,7 @@ extern int errno;
 
 const static size_t BUF_LEN = 65536;
 const static int    EveryTTLExpCount = 3;
+const static int    MaxTraceTTL      = 20;
 //uint16_t ip_chksum(uint16_t initcksum, uint8_t *ptr, int len)
 //{
 //    unsigned int cksum;
@@ -44,13 +45,6 @@ const static int    EveryTTLExpCount = 3;
 //    return cksum;
 //}
 
-//c++的format非常恶心
-#define ScreenOutput(fmt, ...)  do{ \
-    memset(_output_buf, 0, OutputBufLen); \
-    sprintf(_output_buf, fmt,  __VA_ARGS__); \
-    __all_result += _output_buf; \
-} while(false);
-
 template<TraceRouterType ProType=TraceRouterType::UDP, int IS_ANDROID=0>
 class TraceRouter
 {
@@ -59,7 +53,7 @@ public:
     TraceRouter(TraceRouter&& other)=delete;
     TraceRouter& operator=(TraceRouter& other)=delete;
     TraceRouter& operator=(TraceRouter&& other)=delete;
-    TraceRouter(string host, CheckOutput output=DefauleOutPut) : _host(host), _output(output)
+    TraceRouter(string host, shared_ptr<result_output>& output) : _host(host), _output(output)
     {
         LOGI("TraceRouter contruct");
         _send_buf = new char[BUF_LEN];
@@ -121,7 +115,7 @@ public:
                 break;
             }
             //prepare_ip_udp_packet();
-            for(int i = 1; i < 50; i++)
+            for(int i = 1; i < MaxTraceTTL; i++)
             {
 //                _ip_head->ttl = (0XFF & i);
 //                _ip_head->check_sum = htons(ip_chksum(0, (uint8_t*)_send_buf, sizeof(PROP_IP_HEADER)));
@@ -171,7 +165,7 @@ public:
         int ret = 0;
         do
         {
-            ScreenOutput("%2d ", index);///////////////////////
+            CommonOutPut("%2d ", index);///////////////////////
             sockaddr_in addr;
             memset(&addr, 0, sizeof(addr));
 
@@ -192,7 +186,7 @@ public:
                 if(ret <= 0)
                 {
                     LOGE("send fail ret:%d host:%s errno:%d", ret, _host.c_str(), errno);
-                    ScreenOutput("traceroute: %s %d chars, ret=%d", _host.c_str(), (int)sizeof(data), ret);////////////////
+                    CommonOutPut("traceroute: %s %d chars, ret=%d", _host.c_str(), (int)sizeof(data), ret);////////////////
                     continue;
                 }
                 memset(_recv_buf, 0, BUF_LEN);
@@ -203,7 +197,7 @@ public:
                 if(ret <= 0)
                 {
                     LOGI("TraceRouter recvfrom ret: errno:%d", ret, errno);
-                    ScreenOutput("%s", " *");
+                    CommonOutPut("%s", " *");
                     continue;
                 }
                 LOGI("TraceRouter recvfrom ret:%d", ret);
@@ -225,15 +219,15 @@ public:
                     t_ip = cur_ip;
                     if(EveryTTLExpCount - 1 != times)
                     {
-                        ScreenOutput("%s", "\n   ");
+                        CommonOutPut("%s", "\n   ");
                         
                     }
-                    ScreenOutput(" %s (%s)", t_ip.c_str(), t_ip.c_str());
+                    CommonOutPut(" %s (%s)", t_ip.c_str(), t_ip.c_str());
                 }
-                int duration = static_cast<int>((chrono::duration_cast<chrono::microseconds>(end_pt - start_pt)).count());
-                ScreenOutput("  %0.2fms", duration / (float)1000);
+                int duration = (std::chrono::duration_cast<std::chrono::microseconds>(end_pt - start_pt)).count();
+                CommonOutPut("  %0.2fms", duration / (float)1000);
             }
-            ScreenOutput("%s", "\n");
+            CommonOutPut("%s", "\n");
           
         }
         while (false);
@@ -252,7 +246,7 @@ protected:
     int _sequence_number;
 
     vector<list<string>> _router_path;
-    CheckOutput _output;
+    shared_ptr<result_output> _output;
     char _output_buf[OutputBufLen];
     string __all_result;
     
@@ -265,11 +259,11 @@ template<TraceRouterType TRT>
 class TraceRouter<TRT, 1>
 {
 public:
-    TraceRouter(string host, CheckOutput output=DefauleOutPut): _host(host), _output(output)
+    TraceRouter(string host, shared_ptr<result_output>& output): _host(host), _output(output)
     {
         LOGI("TraceRouter contruct");
         __fmt_ping_order = string("ping -t %d -c 1 -w 1 ") + _host;
-        for(int i = 1; i < 50; ++i)
+        for(int i = 1; i < MaxTraceTTL; ++i)
         {
             string t_ip;
             explore_router(i, t_ip);
@@ -283,16 +277,18 @@ public:
 
     int explore_router(int index, string& t_ip)
     {
-        ScreenOutput("%2d ", index);
+        CommonOutPut("%2d ", index);
         int times = 3;
         while (times--)
         {
             string str_result;
+            auto start_pt = std::chrono::steady_clock::now();
             open_ping_cmd(index, str_result);
+            auto end_pt = std::chrono::steady_clock::now();
             string ip_;
             if(process_ping_result(str_result, ip_))
             {
-                ScreenOutput("%s", " *");
+                CommonOutPut("%s", " *");
             }
             else
             {                
@@ -301,13 +297,15 @@ public:
                     t_ip = ip_;
                     if(times != EveryTTLExpCount - 1)
                     {
-                        ScreenOutput("%s", "\n   ");
+                        CommonOutPut("%s", "\n   ");
                     }                    
-                    ScreenOutput(" %s (%s)", t_ip.c_str(), t_ip.c_str());  
-                }                            
+                    CommonOutPut(" %s (%s)", t_ip.c_str(), t_ip.c_str());
+                }  
+                int duration = (std::chrono::duration_cast<std::chrono::microseconds>(end_pt - start_pt)).count();
+                CommonOutPut("  %0.2fms", duration / (float)1000);                          
             }
         }
-        ScreenOutput("%s", "\n");
+        CommonOutPut("%s", "\n");
         return 0;
     }
 
@@ -348,8 +346,7 @@ public:
         return true;
     }
     vector<string> _result;
-    CheckOutput _output;
-    char _output_buf[OutputBufLen];
+    shared_ptr<result_output> _output;
     string _host;
     string __fmt_ping_order;
     string __all_result;
