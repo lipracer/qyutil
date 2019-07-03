@@ -44,10 +44,18 @@
 #include "../include/qyutil.h"
 #include "cmdline.h"
 
-void TestDNSQuery(const char* host, const char* dnsSer);
+void Break()
+{
+    std::this_thread::sleep_for(chrono::milliseconds(100));
+    int fds[2];
+    pipe(fds);
+    write(fds[1], "1", 1);
+}
 
 int main(int argc, char * argv[])
 {
-    NetworkDiagnosis("www.baidu.com", "10.16.169.127");
+    thread th(Break);
+    th.detach();
+    QyUtil::NetworkDiagnosis("pizza.iqiyi.com", "10.16.169.127", 100);
     return 0;
 }

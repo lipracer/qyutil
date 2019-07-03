@@ -19,6 +19,7 @@ result_output::result_output()
 
 result_output::~result_output()
 {
+    _qyinfo("result_output:%s", __func__);
     delete [] _buf;
     _qyerro(_ss.str());
 }
@@ -27,10 +28,10 @@ void result_output::operator()(const char* fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
-    int n = vprintf(fmt, ap);
     vsprintf(_buf, fmt, ap);
     va_end(ap);
     _ss << _buf;
+    _qyinfo(_buf);
 }
 
 const char* result_output::result()
