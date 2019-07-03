@@ -92,6 +92,7 @@ public:
     result_output();
     virtual ~result_output();
     virtual void operator()(const char* fmt, ...);
+    const char* result();
     
 protected:
     char *_buf;

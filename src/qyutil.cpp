@@ -1,15 +1,17 @@
 #include "qyutil.h"
 #include <chrono>
 #include <iostream>
+#include <string>
 
 #include "ping/pinger.hpp"
 #include "dnsquery/dnsquery.h"
 #include "tracerouter/tracerouter.hpp"
 
-using namespace QyUtil;
 using namespace std;
 
-int NetworkDiagnosis(string HostName, string dnsServer)
+namespace QyUtil{
+
+int NetworkDiagnosis(string HostName, string dnsServer, int timeout)
 {
     shared_ptr<result_output> output = make_shared<result_output>();
     result_output& _output = *output;
@@ -17,7 +19,7 @@ int NetworkDiagnosis(string HostName, string dnsServer)
     int ret = 0;
     socket_ipinfo_t ipInfo;
     ipInfo.size = 0;
-    ret = socket_gethostbyname(HostName.c_str(), &ipInfo,  1000/*ms*/, dnsServer.c_str());//
+    ret = socket_gethostbyname(HostName.c_str(), &ipInfo,  timeout/*ms*/, dnsServer.c_str());//
     if(ret !=0 )
     {
         LOGE("query:%s fail!!!", HostName.c_str());
@@ -34,4 +36,39 @@ int NetworkDiagnosis(string HostName, string dnsServer)
         TraceRouter<TraceRouterType::UDP, __PLATFORM__> tr(ipInfo.ip[i], output);
     }
     return ret;    
+}
+#if 0
+int _GetHostNameByServer(string HostName, int timeout, string dnsServer, list<string>& ipList)
+{
+    socket_ipinfo_t ipInfo;
+    ipInfo.size = 0;
+    int ret = socket_gethostbyname(HostName.c_str(), &ipInfo,  1000/*ms*/, dnsServer.c_str());//
+    if(0 == ret)
+        for(int i = 0; i < ipInfo.size; ++i)
+            ipList.push_back(ipInfo.ip[i]);
+
+    return ret;
+}
+
+//sync call
+int _Ping(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/, string& result)
+{
+    shared_ptr<result_output> output = make_shared<result_output>();
+    pinger<1, __PLATFORM__> pinger(host, times, package_size, interval, timeout, output);
+    result.clear();
+    result = output->result();    
+    return 0;
+}
+
+//sync call
+int _TraceRouter(string host, string& result)
+{
+    shared_ptr<result_output> output = make_shared<result_output>();
+    TraceRouter<TraceRouterType::UDP, __PLATFORM__> tr(host, output);
+    result.clear();
+    result = output->result(); 
+    return 0;
+}
+#endif
+
 }

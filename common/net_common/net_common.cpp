@@ -32,3 +32,8 @@ void result_output::operator()(const char* fmt, ...)
     va_end(ap);
     _ss << _buf;
 }
+
+const char* result_output::result()
+{
+    return _ss.str().c_str();
+}

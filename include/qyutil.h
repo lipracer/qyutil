@@ -6,6 +6,8 @@
 #include <functional>
 #include <condition_variable>
 #include <memory>
+#include <list>
+
 #include "qylog.h"
 
 #ifndef __ANDROID__
@@ -75,8 +77,13 @@ private:
     condition_variable __cvar;
     mutex __cvmtx;
 }; 
-}
 
-int NetworkDiagnosis(string HostName, string dnsServer);
+
+int NetworkDiagnosis(string HostName, string dnsServer, int timeout);
+
+int _GetHostNameByServer(string HostName, int timeout, string dnsServer, list<string>& ipList);
+int _Ping(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/, string& result);
+int _TraceRouter(string host, string& result);
+}
 
 #endif

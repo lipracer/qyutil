@@ -20,8 +20,8 @@ LOCAL_SRC_FILES += $(LOCAL_PATH)/../dnsquery/dnsquery.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../ping/pinger.cpp
 #LOCAL_SRC_FILES += $(LOCAL_PATH)/../tracerouter/tracerouter.hpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../../common/net_common/net_common.cpp
-LOCAL_SRC_FILES += jni_wrapper.cpp
 LOCAL_SRC_FILES += $(LOCAL_PATH)/../qyutil.cpp
+LOCAL_SRC_FILES += jni_wrapper.cpp
 
 
 LOCAL_LDLIBS := -llog

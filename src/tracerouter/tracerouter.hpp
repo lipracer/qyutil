@@ -5,6 +5,7 @@
 UDP or ICMP
 func1 : 原生套节子，修改ip协议头部ttl字段
 func2 : 使用setsockopt修改ip字段
+func3 : 基于TCP，修改SYN TTL，设置socket混合模式
  */
 
 #include <vector>
