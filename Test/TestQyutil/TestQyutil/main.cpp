@@ -46,16 +46,17 @@
 
 void Break()
 {
-    std::this_thread::sleep_for(chrono::milliseconds(100));
+    std::this_thread::sleep_for(chrono::milliseconds(10000));
     int fds[2];
     pipe(fds);
+    cout << "write break\n";
     write(fds[1], "1", 1);
 }
 
 int main(int argc, char * argv[])
 {
-    thread th(Break);
-    th.detach();
+//    thread th(Break);
+//    th.detach();
     QyUtil::NetworkDiagnosis("pizza.iqiyi.com", "10.16.169.127", 100);
     return 0;
 }
