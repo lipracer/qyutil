@@ -10,6 +10,10 @@
 #include <functional>
 #include <string>
 #include <sstream>
+
+#include "qylog.h"
+
+#include <asio/ip/address_v4.hpp>
 using namespace std;
 
 typedef unsigned char  u8;
@@ -98,6 +102,56 @@ protected:
     char *_buf;
     stringstream _ss;
 };
+    
+class SimpleHttp
+{
+public:
+    SimpleHttp()
+    {
+        _qyinfo("SimpleHttp construct!");
+        int sock = socket(AF_INET, SOCK_STREAM, 0);
+        do{
+            if(sock <= 0)
+            {
+                break;
+            }
+            sockaddr_in addr;
+            addr.sin_family = AF_INET;
+            addr.sin_port = htons(80);
+            if(0 >= inet_pton(AF_INET, "180.101.49.12", &addr.sin_addr))
+            {
+                _qyerro("invalid addr!");
+                break;
+            }
+            if(0 != connect(sock, (sockaddr*)&addr, sizeof(addr)))
+            {
+                _qyerro("connect fail!");
+                break;
+            }
+            string hello = "hello";
+            if(0 >= send(sock, hello.c_str(), hello.length(), 0))
+            {
+                _qyerro("send fail!");
+                break;
+            }
+            char buf[1024] = { 0 };
+            int count = recv(sock, buf, sizeof(buf), 0);
+            if(0 >= count)
+            {
+                _qyerro("recv fail!");
+                break;
+            }
+            _qyinfo("recv data:", count);
+        }while(false);
+        NetCommon::socket_close(sock);
+    }
+    ~SimpleHttp()
+    {
+        
+    }
+};
+    
+//static SimpleHttp __shttp;
 
 #define CommonOutPut(...) do{\
 if(_output) (*_output)(__VA_ARGS__);\

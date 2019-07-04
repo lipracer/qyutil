@@ -441,7 +441,7 @@ label:
             return n;
         }
     }
-
+    LOGE("socket timeout.");
     return -1;  // 超时或者select失败
 }
 
