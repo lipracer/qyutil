@@ -10,9 +10,12 @@ extern "C" {
 void OC_NetworkDiagnosis(const char* host, const char* dnsSer)
 {
     function<int(void)> fun_1 = std::bind(QyUtil::NetworkDiagnosis, string(host), string(dnsSer), 1000);
-    decltype(fun_1) fun_2 = nullptr;
+    decltype(fun_1) fun_2 = [=]()->int{
+        string _host = host;
+        return 0;
+    };
     auto task = make_pair(fun_1, fun_2);
-    QyUtil::qyutil<1>::getInstance().put_task(task);
+    qyutil_instance.put_task(task);
 }
 
 int NativeGetHostNameByServer(const char* HostName, int timeout, const char* dnsServer, char* ipList)
