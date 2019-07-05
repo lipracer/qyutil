@@ -40,6 +40,7 @@ public:
         _times = times == 0 ? 4 : times;
         _send_buf = new char[send_len];
         _recv_buf = new char[recv_len];
+        _body.resize(package_size);
         if(_times) start();
     }
     ~pinger()
@@ -65,7 +66,6 @@ public:
             timeout.tv_usec = 0;
             setsockopt(_socket, SOL_SOCKET, SO_RCVBUF, &recv_len, sizeof(recv_len));
             setsockopt(_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
-            _body = "test link\n";
             CommonOutPut("PING %s (%s): %d data bytes\n", _host.c_str(), _host.c_str(), _body.length());
             for (int i = 0; i < _times; ++i)
             {
@@ -176,7 +176,7 @@ public:
         }
         float loss = (2.0 * _times - sendc - recvc) / (2.0 * _times) * 100;
         CommonOutPut("%d packets transmitted, %d packets received, %0.1f%s", sendc, recvc, loss, "%% packet loss\n");
-        CommonOutPut("round-trip min/avg/max/stddev = %lld/%0.2f/%lld/6.420 ms", min, (double)avg / _times, max);
+        CommonOutPut("round-trip min/avg/max/stddev = %lld/%0.2f/%lld/6.420 ms\n", min, (double)avg / _times, max);
         
     }
     RawSocket _socket;
