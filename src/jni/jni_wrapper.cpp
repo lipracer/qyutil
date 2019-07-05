@@ -12,12 +12,20 @@ class jni_string
 public:
     jni_string(JNIEnv *env, jstring jstr) : _env(env), _jstr(jstr)
     {
-        _cstr = _env->GetStringUTFChars(jstr, 0);
-        _str = _cstr;
+        if(_jstr)
+        {
+            _cstr = _env->GetStringUTFChars(jstr, 0);
+            _str = _cstr;
+        }
+        else
+        {
+            _cstr = nullptr;
+            _str = "";
+        }
     }
     ~jni_string()
     {
-        _env->ReleaseStringUTFChars(_jstr, _cstr);
+        if(_jstr) _env->ReleaseStringUTFChars(_jstr, _cstr);
     }
     string& str()
     {
@@ -89,7 +97,7 @@ DEFJNIFUNC(int, NetworkDiagnosis, jstring host)
 {
     LOGI("%s", "call jni func TestDNSQuery");
     jni_string jstr(env, host);
-    function<int(void)> fun_1 = std::bind(QyUtil::NetworkDiagnosis, std::string(jstr.str()), std::string("10.16.169.127"), 10);
+    function<int(void)> fun_1 = std::bind(QyUtil::NetworkDiagnosis, std::string(jstr.str()), std::string("10.16.169.127"), 1000);
     decltype(fun_1) fun_2 = nullptr;
     auto task = make_pair(fun_1, fun_2);
     QyUtil::qyutil<1>::getInstance().put_task(task); 

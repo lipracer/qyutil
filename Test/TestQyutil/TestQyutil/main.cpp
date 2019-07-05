@@ -57,6 +57,6 @@ int main(int argc, char * argv[])
 {
 //    thread th(Break);
 //    th.detach();
-    QyUtil::NetworkDiagnosis("pizza.iqiyi.com", "10.16.169.127", 100);
+    QyUtil::NetworkDiagnosis("pizza.iqiyi.com", "10.16.169.127", 1000);
     return 0;
 }
