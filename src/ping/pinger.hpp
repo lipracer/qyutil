@@ -162,7 +162,7 @@ public:
     {
         CommonOutPut("\n--- %s ping statistics ---\n", _host.c_str());
         int sendc = 0, recvc = 0;
-        u64 max = 0, min = 10000, avg = 0;
+        u64 max = 0, min = _interval*1000, avg = 0;
         for(auto& it : _result)
         {
             if(it.bsend) ++sendc;
