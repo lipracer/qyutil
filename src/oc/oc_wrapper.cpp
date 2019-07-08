@@ -1,3 +1,4 @@
+#include "oc_wrapper.h"
 #include "qylog.h"
 #include "qyutil.h"
 
@@ -52,6 +53,61 @@ int NativeTraceRouter(const char* host, char* result)
     shared_ptr<result_output> output = make_shared<result_output>();
     TraceRouter<TraceRouterType::UDP, __PLATFORM__> tr(host, output);
     strcpy(result, output->result());
+    return 0;
+}
+
+static const int MaxStrBuf = 4096;
+
+int AsyncNativeGetHostNameByServer(const char* HostName, int timeout, const char* dnsServer, AsynCB cb)
+{
+    shared_ptr<string> result = make_shared<string>();
+    result->resize(MaxStrBuf);
+    function<int(void)> fun_1 = std::bind(NativeGetHostNameByServer, HostName, timeout, dnsServer, const_cast<char*>(result->c_str()));
+    decltype(fun_1) fun_2 = [=]()->int{
+        if(cb)
+        {
+            cb(true, result->c_str());
+        }
+        return 0;
+    };
+    auto task = make_pair(fun_1, fun_2);
+    qyutil_instance.put_task(task);
+    return 0;
+}
+
+//sync call
+int AsyncNativePing(const char* host, int times, int package_size, int interval/*S*/, int timeout/*S*/, AsynCB cb)
+{
+    shared_ptr<string> result = make_shared<string>();
+    result->resize(MaxStrBuf);
+    function<int(void)> fun_1 = std::bind(NativePing, host, times, package_size, interval, timeout, const_cast<char*>(result->c_str()));
+    decltype(fun_1) fun_2 = [=]()->int{
+        if(cb)
+        {
+            cb(true, result->c_str());
+        }
+        return 0;
+    };
+    auto task = make_pair(fun_1, fun_2);
+    qyutil_instance.put_task(task);
+    return 0;
+}
+
+//sync call
+int AsyncNativeTraceRouter(const char* host, AsynCB cb)
+{
+    shared_ptr<string> result = make_shared<string>();
+    result->resize(MaxStrBuf);
+    function<int(void)> fun_1 = std::bind(NativeTraceRouter, host, const_cast<char*>(result->c_str()));
+    decltype(fun_1) fun_2 = [=]()->int{
+        if(cb)
+        {
+            cb(true, result->c_str());
+        }
+        return 0;
+    };
+    auto task = make_pair(fun_1, fun_2);
+    qyutil_instance.put_task(task);
     return 0;
 }
     
