@@ -17,7 +17,7 @@ result_output::result_output()
 
 result_output::~result_output()
 {
-    _qyinfo("result_output:%s", __func__);
+    _qyinfo("result_output:", __func__);
     delete [] _buf;
     _qyerro(_ss.str());
 }
@@ -34,5 +34,6 @@ void result_output::operator()(const char* fmt, ...)
 
 const char* result_output::result()
 {
+    cout << _ss.str();
     return _ss.str().c_str();
 }

@@ -59,7 +59,7 @@ int main(int argc, char * argv[])
 {
 //    thread th(Break);
 //    th.detach();
-    OC_NetworkDiagnosis("pizza.iqiyi.com", "10.16.169.127");
+    OC_NetworkDiagnosis("pizza.iqiyi.com", "109.153.237.208");
     sleep(10000000);
     return 0;
 }

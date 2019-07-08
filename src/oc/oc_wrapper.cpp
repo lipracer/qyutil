@@ -10,7 +10,7 @@ extern "C" {
 
 void OC_NetworkDiagnosis(const char* host, const char* dnsSer)
 {
-    function<int(void)> fun_1 = std::bind(QyUtil::NetworkDiagnosis, string(host), string(dnsSer), 1000);
+    function<int(void)> fun_1 = std::bind(QyUtil::NetworkDiagnosis, string(host), string(dnsSer), 10000);
     decltype(fun_1) fun_2 = [=]()->int{
         string _host = host;
         return 0;
