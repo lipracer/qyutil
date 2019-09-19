@@ -1,11 +1,15 @@
 #include <jni.h>
 #include <android/log.h>
+#include <vector>
 #include <string>
+#include <memory>
 #include "jni_wrapper.h"
 #include "../ping/pinger.hpp"
 #include "../dnsquery/dnsquery.h"
 #include "../tracerouter/tracerouter.hpp"
 #include "qyutil.h"
+
+static JavaVM *jvm = nullptr;
 
 class jni_string
 {
@@ -46,6 +50,89 @@ jstring chartoJstring(JNIEnv *env, const char *pat) {
     jstring encoding = (env)->NewStringUTF("utf-8");
     return (jstring) (env)->NewObject(strClass, ctorID, bytes, encoding);
 }
+
+#define CHECK_ENV_FUNC_RESULT(result) if(nullptr==result){ret=JNI_ERR;break;}
+template<typename T>
+int vector2arraylist(JNIEnv *env, vector<T>& vec, jobject *arraylist)
+{
+    int ret = 0;
+    do{
+        jclass class_array_list = env->FindClass("java/util/ArrayList");
+        if(nullptr == class_array_list){
+            ret = JNI_ERR;
+            LOGE("FindClass Error!");
+            break;
+        }
+        jmethodID list_init = env->GetMethodID(class_array_list, "<init>", "()V");
+        CHECK_ENV_FUNC_RESULT(list_init);
+        jobject list_obj = env->NewObject(class_array_list, list_init, "");
+        CHECK_ENV_FUNC_RESULT(list_obj);
+        jmethodID list_add = env->GetMethodID(class_array_list, "add", "(Ljava/lang/Object;)Z");
+        CHECK_ENV_FUNC_RESULT(list_add);
+        for(auto& it : vec)
+        {
+            env->CallBooleanMethod(list_obj, list_add, env->NewStringUTF(it.c_str()));
+        }   
+        *arraylist = list_obj;  
+
+    }while(false);
+    if(ret) LOGE("vector2arraylist Error!");
+    return ret;
+}
+
+class JNI_Callback : public QyUtil::Callback
+{
+public:
+    //传入引用 防止虚拟机释放
+    JNI_Callback(jobject jcallback) : _jcallback(jcallback), _env(nullptr)
+    {
+
+    }
+    ~JNI_Callback()
+    {
+
+    }
+    void init_env()
+    {
+        if(jvm->GetEnv((void**)&_env, JNI_VERSION_1_4) != JNI_OK){
+            LOGE("GetEnv Error!");
+            _env = nullptr;
+        }
+    }
+    void dns_query(vector<string>& vec)
+    {
+       int ret = 0;
+        do{
+            jclass class_callback = _env->GetObjectClass(_jcallback);
+            if(nullptr == class_callback){
+                ret = JNI_ERR;
+                LOGE("GetObjectClass Error!");
+                break;
+            }
+            jmethodID method_id_dnsquery = _env->GetMethodID(class_callback, "DnsQuery", "(Ljava/util/ArrayList;)V");
+            if(nullptr == method_id_dnsquery)
+            {
+                ret = JNI_ERR;
+                LOGE("GetMethodID Error!");
+                break;
+            }
+            vector<string> vec;
+            vec.push_back(string("123"));
+            vec.push_back(string("456"));
+            jobject result = nullptr;
+            vector2arraylist<string>(_env, vec, &result);
+ 
+            _env->CallVoidMethod(_jcallback, method_id_dnsquery, result);
+        }while(false);
+    }
+    void ping(PingStatus state)
+    {
+
+    }
+private:
+    jobject _jcallback;
+    JNIEnv *_env;
+};
 
 #ifdef __cplusplus
 extern "C" {
@@ -93,13 +180,45 @@ DEFJNIFUNC(jstring, NativeTraceRouter, jstring host)
     return chartoJstring(env, result);
 }
 
-DEFJNIFUNC(int, NetworkDiagnosis, jstring host) 
+JNIEXPORT jint JNI_OnLoad(JavaVM* vm, void* reserved) {
+    LOGI("%s", "JNI_OnLoad");
+    jvm = vm;
+    return JNI_VERSION_1_4;
+}
+/*
+c++回调Java :
+1.创建引用，防止虚拟机把回调接口释放
+2.拿到回调对象的类方法id
+3.调用类方法
+4.
+*/
+DEFJNIFUNC(int, NetworkDiagnosis, jstring host, jobject callback) 
 {
     LOGI("%s", "call jni func TestDNSQuery");
     jni_string jstr(env, host);
-    function<int(void)> fun_1 = std::bind(QyUtil::NetworkDiagnosis, std::string(jstr.str()), std::string("10.16.169.127"), 1000);
-    decltype(fun_1) fun_2 = nullptr;
-    auto task = make_pair(fun_1, fun_2);
+    string _host = std::string(jstr.str());
+    jobject ref_callback = env->NewGlobalRef(callback);
+
+    auto _callback = make_shared<JNI_Callback>(ref_callback);
+
+    function<int(void)> run_task = [=]()->int{
+        if(jvm) {
+            if (jvm->AttachCurrentThread(const_cast<JNIEnv**>(&env), nullptr))//将当前线程注册到虚拟机中
+            {
+                LOGE("AttachCurrentThread Fail!!!");
+                return -1;
+            }
+            _callback->init_env();
+            QyUtil::NetworkDiagnosis(_host, std::string("10.16.169.127"), 1000, _callback);
+        }
+        return 0;
+    };
+    
+    decltype(run_task) fun_2 = [=]()->int {
+ 
+    };
+    auto task = make_pair(run_task, fun_2);
+
     QyUtil::qyutil<1>::getInstance().put_task(task); 
     return 0;
 }  

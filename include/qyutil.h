@@ -9,6 +9,7 @@
 #include <list>
 
 #include "qylog.h"
+#include "net_common/net_common.h"
 
 #ifndef __ANDROID__
 #define __PLATFORM__ (0)
@@ -77,9 +78,15 @@ private:
     condition_variable __cvar;
     mutex __cvmtx;
 };
+
+class Callback
+{
+public:
+    virtual void dns_query(vector<string>& vec) = 0;
+    virtual void ping(PingStatus state) = 0;
+};    
     
-    
-int NetworkDiagnosis(string HostName, string dnsServer, int timeout);
+int NetworkDiagnosis(string HostName, string dnsServer, int timeout, shared_ptr<Callback> cb);
 
 int _GetHostNameByServer(string HostName, int timeout, string dnsServer, list<string>& ipList);
 int _Ping(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/, string& result);

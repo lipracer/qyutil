@@ -46,6 +46,10 @@ const static int    MaxTraceTTL      = 20;
 //    return cksum;
 //}
 
+#ifdef __ANDROID__ 
+#define SO_NOSIGPIPE (0)
+#endif
+
 template<TraceRouterType ProType=TraceRouterType::UDP, int IS_ANDROID=0>
 class TraceRouter
 {
@@ -110,12 +114,18 @@ public:
                 LOGE("set socket recv timeout error!!!");
                 break;
             }
-            if(0 > (ret = setsockopt(_socket_r, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout))))
+//            if(0 > (ret = setsockopt(_socket_r, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout))))
+//            {
+//                LOGE("set socket recv timeout error!!!");
+//                break;
+//            }
+            //prepare_ip_udp_packet();
+            //only ios
+            const int value = 1;
+            if(0 > (ret = setsockopt(_socket_w, SOL_SOCKET, SO_NOSIGPIPE, &value, sizeof(int))))
             {
-                LOGE("set socket recv timeout error!!!");
                 break;
             }
-            //prepare_ip_udp_packet();
             for(int i = 1; i < MaxTraceTTL; i++)
             {
 //                _ip_head->ttl = (0XFF & i);
@@ -188,12 +198,12 @@ public:
                 {
                     LOGE("send fail ret:%d host:%s errno:%d", ret, _host.c_str(), errno);
                     CommonOutPut("traceroute: %s %d chars, ret=%d", _host.c_str(), (int)sizeof(data), ret);////////////////
-                    continue;
+                    break;
                 }
                 memset(_recv_buf, 0, BUF_LEN);
                 socklen_t addr_len = 0;
                 LOGI("TraceRouter recvfrom");
-                ret = recvfrom(_socket_r, _recv_buf, BUF_LEN, 0, (struct sockaddr*)&addr, &addr_len);
+                ret = RecvWithinTime(_socket_r, _recv_buf, BUF_LEN, (struct sockaddr*)&addr, &addr_len, TraceRouterTimeOut, 0);
                 auto end_pt =  std::chrono::system_clock::now();
                 if(ret <= 0)
                 {
@@ -233,6 +243,49 @@ public:
         }
         while (false);
         return ret;
+    }
+    
+    int RecvWithinTime(int _fd, char* _buf, size_t _buf_n, struct sockaddr* _addr, socklen_t* _len, unsigned int _sec, unsigned _usec) {
+        struct timeval tv;
+        fd_set readfds, exceptfds;
+        int n = 0;
+        
+        FD_ZERO(&readfds);
+        FD_SET(_fd, &readfds);
+        FD_ZERO(&exceptfds);
+        FD_SET(_fd, &exceptfds);
+        
+        tv.tv_sec = _sec;
+        tv.tv_usec = _usec;
+        
+        int ret = -1;
+    label:
+        ret = select(_fd + 1, &readfds, NULL, &exceptfds, &tv);
+        
+        if (-1 == ret) {
+            if (EINTR == errno) {
+                // select被信号中断 handler
+                FD_ZERO(&readfds);
+                FD_SET(_fd, &readfds);
+                FD_ZERO(&exceptfds);
+                FD_SET(_fd, &exceptfds);
+                goto label;
+            }
+        }
+        
+        if (FD_ISSET(_fd, &exceptfds)) {
+            // socket异常处理
+            _qyerro("socket exception.");
+            return -1;
+        }
+        
+        if (FD_ISSET(_fd, &readfds)) {
+            if ((n = (int)recvfrom(_fd, _buf, _buf_n, 0, _addr, _len)) >= 0) {
+                return n;
+            }
+        }
+        
+        return -1;  // 超时或者select失败
     }
 
 protected:

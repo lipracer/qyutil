@@ -150,6 +150,15 @@ public:
         
     }
 };
+
+struct PingStatus {
+    std::string res;
+    double loss_rate;
+    double minrtt;  // ms
+    double avgrtt;  // ms
+    double maxrtt;  // ms
+    char ip[16];
+};
     
 //static SimpleHttp __shttp;
 

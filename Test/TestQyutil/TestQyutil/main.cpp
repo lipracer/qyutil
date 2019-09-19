@@ -43,6 +43,7 @@
 #include "../src/tracerouter/tracerouter.hpp"
 #include "../include/qyutil.h"
 #include "cmdline.h"
+#include <future>
 
 void Break()
 {
@@ -55,11 +56,45 @@ void Break()
 
 extern "C" void OC_NetworkDiagnosis(const char* host, const char* dnsSer);
 
+void get_count(int n)
+{
+    int result = 0;
+    int remain = n;
+    while(remain > 1)
+    {
+        if(remain == 2)
+        {
+            result += 1;
+            break;
+        }
+        result += remain / 3;
+        remain = remain / 3 + remain % 3;
+    }
+    printf("%d\n", result);
+}
+
 int main(int argc, char * argv[])
 {
 //    thread th(Break);
 //    th.detach();
-    OC_NetworkDiagnosis("pizza.iqiyi.com", "109.153.237.208");
-    sleep(10000000);
+//    OC_NetworkDiagnosis("pizza.iqiyi.com", "109.153.237.208");
+//    sleep(10000000);
+    
+//    auto p = promise<int>();
+//    auto f = p.get_future();
+//    thread th([&](){
+//        printf("thread detach");
+//        printf("child thread will sleep\n");
+//        this_thread::sleep_for(chrono::milliseconds(1000));
+//        printf("child thread sleep over\n");
+//        p.set_value(10);
+//    });
+//    th.detach();
+//    printf("promise result:%d\n", f.get());
+//    printf("main func return\n");
+    get_count(3);
+    get_count(10);
+    get_count(81);
+    
     return 0;
 }

@@ -11,11 +11,11 @@ using namespace std;
 
 namespace QyUtil{
 
-int NetworkDiagnosis(string HostName, string dnsServer, int timeout)
+int NetworkDiagnosis(string HostName, string dnsServer, int timeout, shared_ptr<Callback> cb)
 {
     shared_ptr<result_output> output = make_shared<result_output>();
     result_output& _output = *output;
-    LOGI("call:%s host:%s", "NetworkDiagnosis", HostName.c_str());
+    _qyinfo("call:%s host:%s", "NetworkDiagnosis", HostName.c_str());
     int ret = 0;
     socket_ipinfo_t ipInfo;
     ipInfo.size = 0;
@@ -26,14 +26,19 @@ int NetworkDiagnosis(string HostName, string dnsServer, int timeout)
         return ret;
     }
     (*output)("dns query %s ip list:\n", HostName.c_str());
+
+    vector<string> vec_ip;
     for (size_t i = 0; i < ipInfo.size; i++)
     {
         _output("%s\n", ipInfo.ip[i].c_str());
+        vec_ip.push_back(ipInfo.ip[i]);
     }
+    cb->dns_query(vec_ip);
+    _qyinfo("start ping!");
     for (size_t i = 0; i < ipInfo.size; i++)
     {
         pinger<1, __PLATFORM__> pinger(ipInfo.ip[i].c_str(), 4, 0, 1, 0, output);
-        TraceRouter<TraceRouterType::UDP, __PLATFORM__> tr(ipInfo.ip[i], output);
+        //TraceRouter<TraceRouterType::UDP, __PLATFORM__> tr(ipInfo.ip[i], output);
     }
     return ret;    
 }

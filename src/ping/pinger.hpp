@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <errno.h>
+#include <cmath>
 
 #include <string>
 #include <iostream>
@@ -27,13 +28,13 @@ using namespace std;
 template<int IP_TYPE=IPPROTO_ICMP, int IS_ANDROID=0>
 class pinger
 {
-public:
     struct PingState
     {
         u64 cost_time;
         bool bsend;
         bool brecv;
     };
+public:
     pinger(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/, shared_ptr<result_output>& output) : \
     _host(host), _package_size(package_size), _interval(interval), _timeout(timeout), _sequence_number(0), _output(output)
     {
@@ -196,7 +197,6 @@ public:
     const size_t recv_len = 65536;
     shared_ptr<result_output> _output;
     char *_output_buf;
-
     list<PingState> _result;
 };
 
@@ -206,6 +206,8 @@ class pinger<IP_TYPE, 1>
 public:
     pinger(string host, int times, int package_size, int interval/*S*/, int timeout/*S*/, shared_ptr<result_output>& output) : _output(output)
     {
+        LOGI("pinger construct!");
+        //_ping_status = { 0 };
         stringstream ss;
         //int index = snprintf(cmd, 256, "ping -c %d -i %d -w %d", _querycount, interval, timeout);
         if(0 == timeout)
@@ -215,7 +217,7 @@ public:
         ss << "ping " << " -c " << times << " -i " <<  interval << " -w " << timeout << " " << host << "\n"; 
 
         const char * cmd = ss.str().c_str();
-        LOGI("cmd:%s", cmd);
+        _qyinfo("cmd:%s", cmd);
         FILE* pp = popen(cmd, "r");
         if(!pp)
         {
@@ -225,16 +227,91 @@ public:
         string str_result;
         while (fgets(line, sizeof(line), pp) != NULL)
         {
-            _result.push_back(string(line));
+            _qyinfo(line);
+            //_result.push_back(string(line));
             str_result += line;
             memset(line, 0, sizeof(line));            
         }
         pclose(pp);
         CommonOutPut("ping result:%s", str_result.c_str());
     }
+    int GetPingStatus(string & pingresult_) 
+    {
+        if (pingresult_.empty())  return -1;
+
+        _ping_status.res = pingresult_;  //
+        std::vector<std::string> vecPingRes;
+        str_split('\n', pingresult_, vecPingRes);
+
+        std::vector<std::string>::iterator iter = vecPingRes.begin();
+
+        for (; iter != vecPingRes.end(); ++iter) {
+            if (vecPingRes.begin() == iter) {  // extract ip from the result string and assign to _ping_status.ip
+                int index1 = iter->find_first_of("(", 0);
+
+                if (index1 > 0) {
+                    int index2 = iter->find_first_of(")", 0);
+
+                    if (index2 > index1) {
+                        int size = index2 - index1 - 1;
+                        std::string ipTemp(iter->substr(index1 + 1, size));
+ 
+        
+                        strncpy(_ping_status.ip, ipTemp.c_str(), (size < 16 ? size : 15));
+                    }
+                }
+            }  // end if(vecPingRes.begin()==iter)
+
+            int num = iter->find("packet loss", 0);
+
+            if (num >= 0) {
+                int loss_rate = 0;
+                int i = 3;
+
+                while (iter->at(num - i) != ' ') {
+                    loss_rate += ((iter->at(num - i) - '0') * (int)pow(10.0, (double)(i - 3)));
+                    i++;
+                }
+
+                _ping_status.loss_rate  = (double)loss_rate / 100;
+            }
+
+            int num2 = iter->find("rtt min/avg/max", 0);
+
+            if (num2 >= 0) {
+                int find_begpos = 23;
+                int findpos = iter->find_first_of('/', find_begpos);
+                std::string sminRTT(*iter, find_begpos, findpos - find_begpos);
+                find_begpos = findpos + 1;
+                findpos = iter->find_first_of('/', find_begpos);
+                std::string savgRTT(*iter, find_begpos, findpos - find_begpos);
+                find_begpos = findpos + 1;
+                findpos = iter->find_first_of('/', find_begpos);
+                std::string smaxRTT(*iter, find_begpos, findpos - find_begpos);
+
+                _ping_status.minrtt = atof(sminRTT.c_str());
+                _ping_status.avgrtt = atof(savgRTT.c_str());
+                _ping_status.maxrtt = atof(smaxRTT.c_str());
+            }
+        }
+
+        return 0;
+    }
+    void str_split(char _spliter, std::string _pingresult, std::vector<std::string>& _vec_pingres)
+    {
+        int find_begpos = 0;
+        int findpos = 0;
+
+        while ((unsigned int)findpos < _pingresult.length()) {
+            findpos = _pingresult.find_first_of(_spliter, find_begpos);
+            _vec_pingres.push_back(std::string(_pingresult, find_begpos, findpos - find_begpos));
+            find_begpos = findpos + 1;
+        }
+    }
 public:
     vector<string> _result;
     shared_ptr<result_output> _output;
+    PingStatus _ping_status;
 };
 
 extern "C"
