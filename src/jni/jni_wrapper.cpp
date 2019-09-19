@@ -213,11 +213,7 @@ DEFJNIFUNC(int, NetworkDiagnosis, jstring host, jobject callback)
         }
         return 0;
     };
-    
-    decltype(run_task) fun_2 = [=]()->int {
- 
-    };
-    auto task = make_pair(run_task, fun_2);
+    auto task = make_pair(run_task, nullptr);
 
     QyUtil::qyutil<1>::getInstance().put_task(task); 
     return 0;
