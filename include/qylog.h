@@ -17,7 +17,7 @@ void __CPP_LOG(int level, Args ...args)
 {
     stringstream ss;
     int aa[] = { (ss << args, 0)... };
-    QYLogCWrapper(level, TAG, ss.str().c_str());
+    QYLogCWrapper(level, TAG, "%s", ss.str().c_str());
 }
 
 //only for cpp

@@ -198,6 +198,7 @@ public:
     shared_ptr<result_output> _output;
     char *_output_buf;
     list<PingState> _result;
+    PingStatus _ping_status;
 };
 
 template<int IP_TYPE>
@@ -217,7 +218,6 @@ public:
         ss << "ping " << " -c " << times << " -i " <<  interval << " -w " << timeout << " " << host << "\n"; 
 
         const char * cmd = ss.str().c_str();
-        _qyinfo("cmd:%s", cmd);
         FILE* pp = popen(cmd, "r");
         if(!pp)
         {

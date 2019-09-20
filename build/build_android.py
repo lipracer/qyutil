@@ -1,7 +1,8 @@
 import os
 import shutil
 
-ProjectDir = '/Users/lipracer/SourceCode/first/pizza-android/app/src/main/jniLibs/armeabi-v7a'
+# app/src/main/jniLibs/armeabi-v7a/libqyutil.so
+ProjectDir = '/Users/lipracer/SourceCode/first/j-android/app/src/main/jniLibs/armeabi-v7a'
 
 def rm_path(path):
     if os.path.exists(path):

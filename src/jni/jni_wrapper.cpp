@@ -65,7 +65,7 @@ int vector2arraylist(JNIEnv *env, vector<T>& vec, jobject *arraylist)
         }
         jmethodID list_init = env->GetMethodID(class_array_list, "<init>", "()V");
         CHECK_ENV_FUNC_RESULT(list_init);
-        jobject list_obj = env->NewObject(class_array_list, list_init, "");
+        jobject list_obj = env->NewObject(class_array_list, list_init);
         CHECK_ENV_FUNC_RESULT(list_obj);
         jmethodID list_add = env->GetMethodID(class_array_list, "add", "(Ljava/lang/Object;)Z");
         CHECK_ENV_FUNC_RESULT(list_add);
@@ -98,27 +98,19 @@ public:
             LOGE("GetEnv Error!");
             _env = nullptr;
         }
+        _class_callback = _env->GetObjectClass(_jcallback);
     }
     void dns_query(vector<string>& vec)
     {
        int ret = 0;
         do{
-            jclass class_callback = _env->GetObjectClass(_jcallback);
-            if(nullptr == class_callback){
-                ret = JNI_ERR;
-                LOGE("GetObjectClass Error!");
-                break;
-            }
-            jmethodID method_id_dnsquery = _env->GetMethodID(class_callback, "DnsQuery", "(Ljava/util/ArrayList;)V");
+            jmethodID method_id_dnsquery = _env->GetMethodID(_class_callback, "DnsQuery", "(Ljava/util/ArrayList;)V");
             if(nullptr == method_id_dnsquery)
             {
                 ret = JNI_ERR;
                 LOGE("GetMethodID Error!");
                 break;
             }
-            vector<string> vec;
-            vec.push_back(string("123"));
-            vec.push_back(string("456"));
             jobject result = nullptr;
             vector2arraylist<string>(_env, vec, &result);
  
@@ -127,11 +119,20 @@ public:
     }
     void ping(PingStatus state)
     {
-
+        const char *signPingFunc = "(DDDDLjava/lang/String;)V";
+        jmethodID method_id_ping = _env->GetMethodID(_class_callback, "ping", signPingFunc);
+        _env->CallVoidMethod(_jcallback, method_id_ping, state.loss_rate, state.minrtt, state.avgrtt, state.maxrtt, _env->NewStringUTF("xxxx"));
     }
 private:
     jobject _jcallback;
     JNIEnv *_env;
+    jclass _class_callback;
+    int get_jping_status(jobject *jps, PingStatus& status)
+    {
+        return 0;
+    }
+public:
+    //jclass class_ping_status;
 };
 
 #ifdef __cplusplus
@@ -200,7 +201,9 @@ DEFJNIFUNC(int, NetworkDiagnosis, jstring host, jobject callback)
     jobject ref_callback = env->NewGlobalRef(callback);
 
     auto _callback = make_shared<JNI_Callback>(ref_callback);
-
+    //jclass class_ping_status = env->FindClass("com/iqiyi/networkutil/NetworkUtil$PingStatus");
+    //_callback->class_ping_status = class_ping_status;
+    //LOGE("find status class:%d", class_ping_status);
     function<int(void)> run_task = [=]()->int{
         if(jvm) {
             if (jvm->AttachCurrentThread(const_cast<JNIEnv**>(&env), nullptr))//将当前线程注册到虚拟机中

@@ -6,11 +6,27 @@
 #include "../dnsquery/dnsquery.h"
 #include "../tracerouter/tracerouter.hpp"
 
+class OC_Callback : public QyUtil::Callback
+{
+public:
+    void dns_query(vector<string>& vec)
+    {
+
+    }
+    void ping(PingStatus state)
+    {
+
+    }
+};
+
 extern "C" {
 
 void OC_NetworkDiagnosis(const char* host, const char* dnsSer)
 {
-    function<int(void)> fun_1 = std::bind(QyUtil::NetworkDiagnosis, string(host), string(dnsSer), 10000);
+    auto _callback = make_shared<OC_Callback>();
+    string _host(host);
+    string _dnsSer(dnsSer);
+    function<int(void)> fun_1 = std::bind(QyUtil::NetworkDiagnosis, _host, _dnsSer, 10000, _callback);
     decltype(fun_1) fun_2 = [=]()->int{
         string _host = host;
         return 0;

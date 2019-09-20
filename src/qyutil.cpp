@@ -15,7 +15,7 @@ int NetworkDiagnosis(string HostName, string dnsServer, int timeout, shared_ptr<
 {
     shared_ptr<result_output> output = make_shared<result_output>();
     result_output& _output = *output;
-    _qyinfo("call:%s host:%s", "NetworkDiagnosis", HostName.c_str());
+    LOGI("call:%s host:%s", "NetworkDiagnosis", HostName.c_str());
     int ret = 0;
     socket_ipinfo_t ipInfo;
     ipInfo.size = 0;
@@ -39,6 +39,7 @@ int NetworkDiagnosis(string HostName, string dnsServer, int timeout, shared_ptr<
     {
         pinger<1, __PLATFORM__> pinger(ipInfo.ip[i].c_str(), 4, 0, 1, 0, output);
         //TraceRouter<TraceRouterType::UDP, __PLATFORM__> tr(ipInfo.ip[i], output);
+        cb->ping(pinger._ping_status);
     }
     return ret;    
 }
