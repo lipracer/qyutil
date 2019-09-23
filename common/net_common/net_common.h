@@ -30,6 +30,8 @@ enum class TraceRouterType : char
     ICMP
 };
 
+const int MAX_MSG_BUF = 512;
+
 static inline unsigned short __getpid()
 {
     return static_cast<unsigned short>(::getpid());
@@ -158,7 +160,58 @@ struct PingStatus {
     double avgrtt;  // ms
     double maxrtt;  // ms
     char ip[16];
+    PingStatus() : loss_rate(0.0), minrtt(0.0), avgrtt(0.0), maxrtt(0.0) 
+    {
+        res = "";
+        memset(ip, 0, sizeof(ip));
+    }
+    friend std::ostream& operator<<(std::ostream& os, PingStatus& status)
+    {
+        os << "PingStatus---->" << "loss_rate:" << status.loss_rate << " ";
+        os << "minrtt:" << status.minrtt << " ";
+        os << "avgrtt:" << status.avgrtt << " ";
+        os << "maxrtt:" << status.maxrtt << " ";
+        os << "ip:" << status.ip;
+        return os;
+    }
 };
+
+struct QYErrorInfo_
+{
+    int error_code;
+    char msg[NetCommon::MAX_MSG_BUF];
+    QYErrorInfo_()
+    {
+        recover();
+    }
+    QYErrorInfo_(int nerr, string& msg_) : QYErrorInfo_()
+    {
+        set(nerr, msg_.c_str());
+    }
+    void set(int nerr, const char* msg_)
+    {
+        error_code = nerr;
+        if(msg_)
+        {
+            int size = strlen(msg_) >= NetCommon::MAX_MSG_BUF ? NetCommon::MAX_MSG_BUF-1 : strlen(msg_);
+            strncpy(msg, msg_, size);
+        }
+        else
+        {
+            memset(msg, 0, NetCommon::MAX_MSG_BUF);
+        }
+    }
+    void recover()
+    {
+        set(0, nullptr);
+    }
+    ~QYErrorInfo_()
+    {
+        LOGD("QYErrorInfo_ destruct!");
+    }
+};
+
+using QYErrorInfo = shared_ptr<QYErrorInfo_>;
     
 //static SimpleHttp __shttp;
 

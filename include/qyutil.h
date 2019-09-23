@@ -82,8 +82,8 @@ private:
 class Callback
 {
 public:
-    virtual void dns_query(vector<string>& vec) = 0;
-    virtual void ping(PingStatus state) = 0;
+    virtual void dns_query(vector<string>& vec, QYErrorInfo error) = 0;
+    virtual void ping(PingStatus& state, QYErrorInfo error) = 0;
 };    
     
 int NetworkDiagnosis(string HostName, string dnsServer, int timeout, shared_ptr<Callback> cb);

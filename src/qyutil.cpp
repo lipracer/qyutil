@@ -13,8 +13,8 @@ namespace QyUtil{
 
 int NetworkDiagnosis(string HostName, string dnsServer, int timeout, shared_ptr<Callback> cb)
 {
-    shared_ptr<result_output> output = make_shared<result_output>();
-    result_output& _output = *output;
+    // shared_ptr<result_output> output = make_shared<result_output>();
+    // result_output& _output = *output;
     LOGI("call:%s host:%s", "NetworkDiagnosis", HostName.c_str());
     int ret = 0;
     socket_ipinfo_t ipInfo;
@@ -23,23 +23,40 @@ int NetworkDiagnosis(string HostName, string dnsServer, int timeout, shared_ptr<
     if(ret !=0 )
     {
         LOGE("query:%s fail!!!", HostName.c_str());
-        return ret;
     }
-    (*output)("dns query %s ip list:\n", HostName.c_str());
+    // (*output)("dns query %s ip list:\n", HostName.c_str());
 
     vector<string> vec_ip;
     for (size_t i = 0; i < ipInfo.size; i++)
     {
-        _output("%s\n", ipInfo.ip[i].c_str());
+        // _output("%s\n", ipInfo.ip[i].c_str());
         vec_ip.push_back(ipInfo.ip[i]);
     }
-    cb->dns_query(vec_ip);
+    auto error = make_shared<QYErrorInfo_>();
+    if(0 == ipInfo.size)
+    {
+        error->set(-1, "unknown host");
+    }
+    cb->dns_query(vec_ip, error);
     _qyinfo("start ping!");
+    if(0 == ipInfo.size)
+    {
+        error->recover();
+        error->set(-1, "empty ip list");
+        PingStatus status; 
+        cb->ping(status, error);
+    }
     for (size_t i = 0; i < ipInfo.size; i++)
     {
-        pinger<1, __PLATFORM__> pinger(ipInfo.ip[i].c_str(), 4, 0, 1, 0, output);
+        pinger<1, __PLATFORM__> pinger(ipInfo.ip[i].c_str(), 4, 0, 1, 0);
         //TraceRouter<TraceRouterType::UDP, __PLATFORM__> tr(ipInfo.ip[i], output);
-        cb->ping(pinger._ping_status);
+#if 1
+        stringstream ss;
+        ss << pinger._ping_status;
+        _qyinfo(ss.str());
+#endif
+        error->recover();
+        cb->ping(pinger._ping_status, error);
     }
     return ret;    
 }

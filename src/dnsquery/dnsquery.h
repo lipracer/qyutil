@@ -30,7 +30,6 @@ int socket_gethostbyname(const char* _host, struct socket_ipinfo_t* _ipinfo, int
 extern "C"{
 #endif
 
-
 /**
  *函数名:    socket_gethostbyname
  *功能: 输入域名，可得到该域名下所对应的IP地址列表

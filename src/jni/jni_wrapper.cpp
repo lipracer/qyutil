@@ -100,11 +100,35 @@ public:
         }
         _class_callback = _env->GetObjectClass(_jcallback);
     }
-    void dns_query(vector<string>& vec)
+
+    int cstatus2jstatus(PingStatus& status, jobject *jstatus)
+    {
+        jclass cls_status = _env->FindClass("com/iqiyi/inq/netutils/ProbeWrapper$PingStatus");
+        if(!cls_status)
+        {
+            LOGE("FindClass status error!");
+            return -1;
+        }
+        jmethodID mth_init = _env->GetMethodID(cls_status, "<init>", "()V");
+        if(!mth_init)
+        {
+            LOGE("GetMethodID status init method error!");
+            return -1;
+        }
+        *jstatus = _env->NewObject(cls_status, mth_init);
+        if(!jstatus)
+        {
+            LOGE("cstatus2jstatus new object error!");
+            return -1;
+        }
+        return 0;
+    }
+    void dns_query(vector<string>& vec, QYErrorInfo error)
     {
        int ret = 0;
         do{
-            jmethodID method_id_dnsquery = _env->GetMethodID(_class_callback, "DnsQuery", "(Ljava/util/ArrayList;)V");
+            const char *sign_dns_query = "(Ljava/util/ArrayList;ILjava/lang/String;)V";
+            jmethodID method_id_dnsquery = _env->GetMethodID(_class_callback, "DnsQuery", sign_dns_query);
             if(nullptr == method_id_dnsquery)
             {
                 ret = JNI_ERR;
@@ -114,23 +138,30 @@ public:
             jobject result = nullptr;
             vector2arraylist<string>(_env, vec, &result);
  
-            _env->CallVoidMethod(_jcallback, method_id_dnsquery, result);
+            _env->CallVoidMethod(_jcallback, method_id_dnsquery, result, error->error_code, _env->NewStringUTF(error->msg));
         }while(false);
     }
-    void ping(PingStatus state)
+    
+    void ping(PingStatus& status, QYErrorInfo error)
     {
-        const char *signPingFunc = "(DDDDLjava/lang/String;)V";
+        //jobject jstatus = nullptr;
+        //cstatus2jstatus(status, &jstatus);
+        const char *signPingFunc = "(DDDDLjava/lang/String;ILjava/lang/String;)V";
         jmethodID method_id_ping = _env->GetMethodID(_class_callback, "ping", signPingFunc);
-        _env->CallVoidMethod(_jcallback, method_id_ping, state.loss_rate, state.minrtt, state.avgrtt, state.maxrtt, _env->NewStringUTF("xxxx"));
+        LOGD("callback CallVoidMethod methodID:%lld", method_id_ping);
+        _env->CallVoidMethod(_jcallback, method_id_ping,
+                            status.loss_rate,
+                            status.minrtt,
+                            status.avgrtt,
+                            status.maxrtt,
+                            _env->NewStringUTF(status.ip),
+                            error->error_code,
+                            _env->NewStringUTF(error->msg));
     }
 private:
     jobject _jcallback;
     JNIEnv *_env;
     jclass _class_callback;
-    int get_jping_status(jobject *jps, PingStatus& status)
-    {
-        return 0;
-    }
 public:
     //jclass class_ping_status;
 };
@@ -165,11 +196,9 @@ DEFJNIFUNC(jstring, NativeQueryDNS, jstring host, jstring dnsSer, jint timeout/*
 DEFJNIFUNC(jstring, NativePing, jstring host, jint times, jint package_size, jint interval/*S*/, jint timeout/*S*/)
 {
     jni_string jstr(env, host);
-    shared_ptr<result_output> output = make_shared<result_output>();
     string host_ = jstr.str();
-    pinger<1, __PLATFORM__> pinger(host_, (int)times, (int)package_size, (int)interval, (int)timeout, output);
-    const char* result = output->result(); 
-    return chartoJstring(env, result);
+    pinger<1, __PLATFORM__> pinger(host_, (int)times, (int)package_size, (int)interval, (int)timeout);
+    return chartoJstring(env, "");
 }
 
 DEFJNIFUNC(jstring, NativeTraceRouter, jstring host)
@@ -193,7 +222,7 @@ c++回调Java :
 3.调用类方法
 4.
 */
-DEFJNIFUNC(int, NetworkDiagnosis, jstring host, jobject callback) 
+DEFJNIFUNC(jint, NetworkDiagnosis, jstring host, jobject callback) 
 {
     LOGI("%s", "call jni func TestDNSQuery");
     jni_string jstr(env, host);
@@ -212,7 +241,7 @@ DEFJNIFUNC(int, NetworkDiagnosis, jstring host, jobject callback)
                 return -1;
             }
             _callback->init_env();
-            QyUtil::NetworkDiagnosis(_host, std::string("10.16.169.127"), 1000, _callback);
+            QyUtil::NetworkDiagnosis(_host, std::string(""), 1000, _callback);
         }
         return 0;
     };

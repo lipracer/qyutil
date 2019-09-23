@@ -9,11 +9,11 @@
 class OC_Callback : public QyUtil::Callback
 {
 public:
-    void dns_query(vector<string>& vec)
+    void dns_query(vector<string>& vec, QYErrorInfo error)
     {
 
     }
-    void ping(PingStatus state)
+    void ping(PingStatus& state, QYErrorInfo error)
     {
 
     }
@@ -57,9 +57,9 @@ int NativeGetHostNameByServer(const char* HostName, int timeout, const char* dns
 //sync call
 int NativePing(const char* host, int times, int package_size, int interval/*S*/, int timeout/*S*/, char* result)
 {
-    shared_ptr<result_output> output = make_shared<result_output>();
-    pinger<1, __PLATFORM__> pinger(host, times, package_size, interval, timeout, output);
-    strcpy(result, output->result());
+    //shared_ptr<result_output> output = make_shared<result_output>();
+    pinger<1, __PLATFORM__> pinger(host, times, package_size, interval, timeout);
+    //strcpy(result, output->result());
     return 0;
 }
 
