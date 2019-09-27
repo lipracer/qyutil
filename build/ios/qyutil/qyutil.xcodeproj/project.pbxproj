@@ -15,6 +15,7 @@
 		338B3F1A22C257EA00177A1A /* pinger.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 338B3F1222C257EA00177A1A /* pinger.hpp */; };
 		33B91E5522C9E99E0027208F /* net_common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33B91E5422C9E99E0027208F /* net_common.cpp */; };
 		33B91E5722C9E9B90027208F /* pinger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33B91E5622C9E9B90027208F /* pinger.cpp */; };
+		33F726AC233CB9F7007A034A /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 33F726AB233CB9F7007A034A /* libresolv.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,6 +41,7 @@
 		33B91E5422C9E99E0027208F /* net_common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = net_common.cpp; path = ../../../common/net_common/net_common.cpp; sourceTree = "<group>"; };
 		33B91E5622C9E9B90027208F /* pinger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pinger.cpp; path = ../../../src/ping/pinger.cpp; sourceTree = "<group>"; };
 		33B91E5822C9E9C30027208F /* tracerouter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = tracerouter.hpp; path = ../../../src/tracerouter/tracerouter.hpp; sourceTree = "<group>"; };
+		33F726AB233CB9F7007A034A /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libresolv.tbd; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33F726AC233CB9F7007A034A /* libresolv.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,6 +70,7 @@
 				338B3F0F22C257EA00177A1A /* qyutil.cpp */,
 				338B3F0222C2578300177A1A /* qyutil */,
 				338B3F0122C2578300177A1A /* Products */,
+				33F726AA233CB9F7007A034A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -83,6 +87,14 @@
 			children = (
 			);
 			path = qyutil;
+			sourceTree = "<group>";
+		};
+		33F726AA233CB9F7007A034A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				33F726AB233CB9F7007A034A /* libresolv.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,6 +283,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = ASIO_STANDALONE;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../../../common/asio/include",
@@ -290,6 +303,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				ENABLE_BITCODE = NO;
+				ENABLE_TESTABILITY = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = ASIO_STANDALONE;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../../../common/asio/include",
@@ -300,6 +316,7 @@
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../../include";
+				VALIDATE_PRODUCT = NO;
 				VALID_ARCHS = "armv7 armv7s arm64 arm64e";
 			};
 			name = Release;

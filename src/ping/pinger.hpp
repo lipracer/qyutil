@@ -176,6 +176,10 @@ public:
             }
         }
         float loss = (2.0 * _times - sendc - recvc) / (2.0 * _times) * 100;
+        _ping_status.loss_rate = loss;
+        _ping_status.maxrtt = max;
+        _ping_status.avgrtt = (double)avg / _times;
+        strncpy(_ping_status.ip, _host.c_str(), 15);
         // CommonOutPut("%d packets transmitted, %d packets received, %0.1f%s", sendc, recvc, loss, "%% packet loss\n");
         // CommonOutPut("round-trip min/avg/max/stddev = %lld/%0.2f/%lld/6.420 ms\n", min, (double)avg / _times, max);
         

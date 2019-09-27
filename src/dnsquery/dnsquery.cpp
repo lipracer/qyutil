@@ -493,7 +493,8 @@ void GetHostDnsServerIP(std::vector<std::string>& _dns_servers) {
     } else {
         //  /etc/resolv.conf 不存在
         struct __res_state stat = {0};
-        res_ninit(&stat);
+        int error_code = res_ninit(&stat);
+        LOGD("res_ninit error_code:%d", error_code);
 
 //        if (stat.nsaddr_list != 0) {
             struct sockaddr_in nsaddr;
@@ -503,11 +504,15 @@ void GetHostDnsServerIP(std::vector<std::string>& _dns_servers) {
                 
                 //TODO
                 //const char* nsIP = socket_address(nsaddr).ip();
-                const char* nsIP = asio::ip::make_address_v4(ntohl(nsaddr.sin_addr.s_addr)).to_string().c_str();
-                //const char* nsIP = nullptr;
-                LOGD("/etc/resolv.conf not exit ip:%s", nsIP);
-                if (NULL != nsIP)
-                	_dns_servers.push_back(std::string(nsIP));
+                try{
+                    const char* nsIP = inet_ntoa(nsaddr.sin_addr);
+                    //const char* nsIP = nullptr;
+                    LOGD("/etc/resolv.conf not exit ip:%s", nsIP);
+                    if (NULL != nsIP)
+                        _dns_servers.push_back(std::string(nsIP));
+                }catch(std::exception& e){
+                    LOGE("make_address_v4 exception:%s", e.what());
+                }
             }
 //        }
 

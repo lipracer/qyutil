@@ -9,23 +9,45 @@
 class OC_Callback : public QyUtil::Callback
 {
 public:
+    OC_Callback(PingCallback cb) : oc_cb(cb){}
     void dns_query(vector<string>& vec, QYErrorInfo error)
     {
 
     }
     void ping(PingStatus& state, QYErrorInfo error)
     {
-
+        if(oc_cb)
+        {
+            OC_PingStatus oc_statue;
+            ZeroPingStatus(&oc_statue);
+            oc_statue.loss_rate = state.loss_rate;
+            oc_statue.minrtt = state.minrtt;
+            oc_statue.avgrtt = state.avgrtt;  // ms
+            oc_statue.maxrtt = state.maxrtt;  // ms
+            strncpy(oc_statue.ip, state.ip, MAX_IP_BUF_LEN - 1);
+            (*oc_cb)(&oc_statue, error->error_code, error->msg);
+        }
     }
+private:
+    PingCallback oc_cb;
 };
 
 extern "C" {
 
-void OC_NetworkDiagnosis(const char* host, const char* dnsSer)
+void ZeroPingStatus(struct OC_PingStatus *status)
 {
-    auto _callback = make_shared<OC_Callback>();
+    status->loss_rate = 0.0;
+    status->minrtt = 0.0;
+    status->avgrtt = 0.0;
+    status->maxrtt = 0.0;
+    memset(status, 0, MAX_IP_BUF_LEN);
+}
+
+void OC_NetworkDiagnosis(const char* host, const char* dnsSer, PingCallback cb)
+{
+    auto _callback = make_shared<OC_Callback>(cb);
     string _host(host);
-    string _dnsSer(dnsSer);
+    string _dnsSer(dnsSer == nullptr ? "" : dnsSer);
     function<int(void)> fun_1 = std::bind(QyUtil::NetworkDiagnosis, _host, _dnsSer, 10000, _callback);
     decltype(fun_1) fun_2 = [=]()->int{
         string _host = host;
