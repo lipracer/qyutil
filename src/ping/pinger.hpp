@@ -87,6 +87,7 @@ public:
                         << ", ttl=" << _recv_ipv4_hdr.time_to_live()
                         << ", time=" << duration << "ms";
                         //CommonOutPut("%s\n", ss.str().c_str());
+                        _qyinfo(ss.str());
                         state.bsend = true;
                         state.brecv = true;
                         state.cost_time = duration;
@@ -179,6 +180,7 @@ public:
         _ping_status.loss_rate = loss;
         _ping_status.maxrtt = max;
         _ping_status.avgrtt = (double)avg / _times;
+        _ping_status.minrtt = min;
         strncpy(_ping_status.ip, _host.c_str(), 15);
         // CommonOutPut("%d packets transmitted, %d packets received, %0.1f%s", sendc, recvc, loss, "%% packet loss\n");
         // CommonOutPut("round-trip min/avg/max/stddev = %lld/%0.2f/%lld/6.420 ms\n", min, (double)avg / _times, max);
