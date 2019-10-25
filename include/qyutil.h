@@ -18,7 +18,7 @@
 #endif
 
 using namespace std;
-namespace QyUtil
+namespace qyutil
 {
 using QYUtilTask = std::pair<function<int(void)>, function<int(void)>>;
 
@@ -93,6 +93,21 @@ int _Ping(string host, int times, int package_size, int interval/*S*/, int timeo
 int _TraceRouter(string host, string& result);
 }
 
-#define qyutil_instance (QyUtil::qyutil<1>::getInstance())
+class QYUtilException : public std::exception
+{
+public:
+    QYUtilException(string _msg) : msg(_msg)
+    {
+        
+    }
+    const char * what() const noexcept override
+    {
+        return msg.c_str();
+    }
+private:
+    string msg;
+};
+
+#define qyutil_instance (qyutil::qyutil<1>::getInstance())
 
 #endif

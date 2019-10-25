@@ -12,9 +12,16 @@ static const char * TAG = "QYUtil-Log"; // 这个是自定义的LOG的标识
 #define LOGE(...) QYLogCWrapper(6, TAG, __VA_ARGS__) // 定义LOGE类型   
 #define LOGF(...) QYLogCWrapper(7, TAG, __VA_ARGS__) // 定义LOGF类型
 
+//template <typename T>
+//void __CPP_LOG(int level, T arg)
+//{
+//
+//}
+
 template <typename ...Args>
 void __CPP_LOG(int level, Args ...args)
 {
+//    return __CPP_LOG(level, args...);
     stringstream ss;
     int aa[] = { (ss << args, 0)... };
     QYLogCWrapper(level, TAG, "%s", ss.str().c_str());

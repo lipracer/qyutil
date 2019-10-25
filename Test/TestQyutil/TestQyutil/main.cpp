@@ -38,12 +38,18 @@
  */
 
 #include <iostream>
+#include <string>
+#include <map>
 #include "qylog.h"
 #include "../src/dnsquery/dnsquery.h"
 #include "../src/tracerouter/tracerouter.hpp"
 #include "../include/qyutil.h"
 #include "cmdline.h"
 #include <future>
+#include "../src/http/request.hpp"
+
+using namespace std;
+using namespace qyutil;
 
 void Break()
 {
@@ -54,14 +60,17 @@ void Break()
     write(fds[1], "1", 1);
 }
 
-extern "C" void OC_NetworkDiagnosis(const char* host, const char* dnsSer);
-
-
 int main(int argc, char * argv[])
 {
-//    thread th(Break);
-//    th.detach();
-    OC_NetworkDiagnosis("pizza.iqiyi.com", "109.153.237.208");
-    sleep(10000000);
+    map<string, string> params;
+    try
+    {
+        Request().get("http://www.baidu.com", params, 1000LL);
+    }
+    catch (std::exception &e)
+    {
+        _qyerro(e.what());
+    }
+    
     return 0;
 }

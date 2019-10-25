@@ -9,7 +9,7 @@
 
 using namespace std;
 
-namespace QyUtil{
+namespace qyutil{
 
 int NetworkDiagnosis(string HostName, string dnsServer, int timeout, shared_ptr<Callback> cb)
 {
