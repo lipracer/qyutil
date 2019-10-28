@@ -65,7 +65,8 @@ int main(int argc, char * argv[])
     map<string, string> params;
     try
     {
-        Request().get("http://www.baidu.com", params, 1000LL);
+        Request request;
+        request.get("http://www.baidu.com", params, 1000LL);
     }
     catch (std::exception &e)
     {

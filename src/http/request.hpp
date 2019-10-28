@@ -122,7 +122,7 @@ private:
         {
             domain = domain.substr(0, first_backslash);
         }
-        ips.push_back("10.4.155.105");
+        ips.push_back("127.0.0.1");
         if(get_ip_by_domain(domain))
         {
             string msg = "unknown domain:";
