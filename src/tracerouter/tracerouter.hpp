@@ -11,7 +11,7 @@ func3 : 基于TCP，修改SYN TTL，设置socket混合模式
 #include <vector>
 #include <list>
 #include <string>
-#include <asio/ip/address_v4.hpp>
+//#include <asio/ip/address_v4.hpp>
 
 #include "qylog.h"
 #include "net_common/ipv4_header.hpp"

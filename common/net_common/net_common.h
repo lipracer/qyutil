@@ -13,7 +13,7 @@
 
 #include "qylog.h"
 
-#include <asio/ip/address_v4.hpp>
+//#include <asio/ip/address_v4.hpp>
 using namespace std;
 
 typedef unsigned char  u8;

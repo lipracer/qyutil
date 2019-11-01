@@ -73,7 +73,7 @@ public:
         if(ips.size())
         {
             auto first = ips.begin();
-            while (first != ips.end() && stream->open(*first, 8000, timeout))
+            while (first != ips.end() && stream->open(*first, 80, timeout))
             {
                 first++;
             }
@@ -94,7 +94,7 @@ private:
     {
         socket_ipinfo_t info;
         info.size = 0;
-        int result = socket_gethostbyname(domain.c_str(),&info, timeout, "8.8.8.8");
+        int result = socket_gethostbyname(domain.c_str(),&info, timeout, "10.16.169.127");
         for(int i = 0; i < info.size; ++i)
         {
             ips.push_back(info.ip[i]);
@@ -122,12 +122,12 @@ private:
         {
             domain = domain.substr(0, first_backslash);
         }
-        ips.push_back("127.0.0.1");
+//        ips.push_back("127.0.0.1");
         if(get_ip_by_domain(domain))
         {
             string msg = "unknown domain:";
             msg += domain;
-            //throw QYUtilException(msg);
+            throw QYUtilException(msg);
         }
     }
     void build_req_header(string& url, int method, map<string, string>& params)
@@ -174,8 +174,8 @@ private:
                 throw QYUtilException("recv error");
             }
             response.append(buf.get(), length);
+            memset(buf.get(), 0, LTcpBuf);
         }while(length == LTcpBuf);
-        response += '\0';
         _qyinfo(response);
         return 0;
     }
