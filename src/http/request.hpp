@@ -13,6 +13,8 @@
 
 #define HTTP_HEADER_EOF ("\r\n")
 
+//#define _qyinfo
+
 namespace qyutil
 {
 using namespace std;
@@ -27,7 +29,7 @@ enum StreamError : int
     read_error,
 };
 
-const size_t LTcpBuf = 1024;
+const size_t LTcpBuf = 1024 + 1;
 
 class SocketStream
 {
@@ -51,19 +53,24 @@ private:
 
 class Request
 {
+    static const short DEFAULT_PORT = 80;
 public:
     static string& version()
     {
         static string version = "1.0";
         return version;
     }
-    Request()
+    Request() : port(Request::DEFAULT_PORT)
     {
         stream = make_shared<TcpSocketStream>();
         //buf = shared_ptr<char>(new char[LTcpBuf]);
-        buf = make_shared<char>(LTcpBuf);
+        m_buf = new char[LTcpBuf];
     }
-    ~Request(){ _qyinfo("destruct request"); }
+    ~Request()
+    {
+        delete [] m_buf;
+        _qyinfo("destruct request");
+    }
     void get(string url, map<string, string> params, int timeout)
     {
         this->timeout = timeout;
@@ -73,7 +80,7 @@ public:
         if(ips.size())
         {
             auto first = ips.begin();
-            while (first != ips.end() && stream->open(*first, 80, timeout))
+            while (first != ips.end() && stream->open(*first, port, timeout))
             {
                 first++;
             }
@@ -101,6 +108,8 @@ private:
         }
         return result;
     }
+
+    // /(http|https):\/\/([\w.]+\/?)\S*/　
     void parse_url(string &url)
     {
         string prefix = url.substr(0, 4);
@@ -117,10 +126,20 @@ private:
             throw QYUtilException(msg);
         }
         string domain = url.substr(7, url.length() - 7);
-        size_t first_backslash = domain.find('/');
-        if(std::string::npos != first_backslash)
+        size_t position = domain.find('/');
+        if(std::string::npos != position)
         {
-            domain = domain.substr(0, first_backslash);
+            domain = domain.substr(0, position);
+        }
+        position = domain.find(':'); 
+        if(std::string::npos != position)
+        {
+            if(position + 1 < domain.length())
+            {
+                string str_port = domain.substr(position + 1);
+                short nPort = atoi(str_port.c_str());
+                if(nPort > 0) port = nPort;
+            }
         }
 //        ips.push_back("127.0.0.1");
         if(get_ip_by_domain(domain))
@@ -164,18 +183,19 @@ private:
             throw QYUtilException("send error");
         }
         
-        memset(buf.get(), 0, LTcpBuf);
-        length = LTcpBuf;
+        memset(m_buf, 0, LTcpBuf);
+        length = LTcpBuf - 1;
         
         do
         {
-            if(StreamError::ok != stream->read(buf.get(), length, timeout))
+            if(StreamError::ok != stream->read(m_buf, length, timeout))
             {
                 throw QYUtilException("recv error");
             }
-            response.append(buf.get(), length);
-            memset(buf.get(), 0, LTcpBuf);
+            response.append(m_buf, length);
+            memset(m_buf, 0, LTcpBuf);
         }while(length == LTcpBuf);
+        cout << response << "---------------------------------------" << endl;
         _qyinfo(response);
         return 0;
     }
@@ -197,7 +217,8 @@ private:
     int code;
     int timeout;
     list<string> ips;
-    shared_ptr<char> buf;
+    short port;
+    char *m_buf;
     string response;
 };
 

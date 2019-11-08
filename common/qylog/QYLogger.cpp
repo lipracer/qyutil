@@ -45,7 +45,10 @@ string format_msg(QYCStr module, QYLogPriority level, QYCStr msg)
 
 QYBaseLogger::QYBaseLogger(QYLogPriority level):m_level(level) {}
 
-QYBaseLogger::~QYBaseLogger() {}
+QYBaseLogger::~QYBaseLogger()
+{
+    printf("~QYBaseLogger\n");
+}
 
 int QYBaseLogger::Log(QYCStr module, QYLogPriority level, QYCStr msg)
 {

@@ -44,6 +44,10 @@ StreamError TcpSocketStream::read(const char *buf, size_t& length, int timeout)
 {
     StreamError ret = StreamError::ok;
     length = recv(hsocket, (void*)buf, length, 0);
+    if(length < 0)
+    {
+        ret = StreamError::read_error;
+    }
     return ret;
 }
 

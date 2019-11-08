@@ -65,8 +65,11 @@ int main(int argc, char * argv[])
     map<string, string> params;
     try
     {
-        Request request;
-        request.get("http://www.baidu.com", params, 1000LL);
+        for(int i = 0; i < 20; ++i)
+        {
+            Request request;
+            request.get("http://www.baidu.com", params, 1000LL);
+        }
     }
     catch (std::exception &e)
     {

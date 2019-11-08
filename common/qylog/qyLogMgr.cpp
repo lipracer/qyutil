@@ -18,9 +18,10 @@ void QYLogCWrapper(int level, QYCStr module, QYCStr format, ...)
     char buf[4096] = { 0 };
     va_list ap;     
     va_start(ap, format);
-    vsprintf(buf, format, ap);
+    vsnprintf(buf, 4095, format, ap);
     va_end(ap);
-    QYLog(module, (QYLogPriority)(level), buf);
+    cout << buf << endl;
+    //QYLog(module, (QYLogPriority)(level), buf);
 }
 
 QYLogMgr::QYLogMgr() : m_isInit(false),m_log_mode(QYLogMode::Console)
