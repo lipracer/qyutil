@@ -1,6 +1,8 @@
 #ifndef _QYUTIL_REQUEST_
 #define _QYUTIL_REQUEST_
 
+#include "response.hpp"
+
 #include "net_common/net_common.h"
 #include <string>
 #include <map>
@@ -10,8 +12,6 @@
 #include "qylog.h"
 #include "qyutil.h"
 #include "../dnsquery/dnsquery.h"
-
-#define HTTP_HEADER_EOF ("\r\n")
 
 //#define _qyinfo
 
@@ -71,7 +71,7 @@ public:
         delete [] m_buf;
         _qyinfo("destruct request");
     }
-    void get(string url, map<string, string> params, int timeout)
+    response get(string url, map<string, string> params, int timeout)
     {
         this->timeout = timeout;
         parse_url(url);
@@ -90,6 +90,7 @@ public:
                 parse_req_header();
             }
         }
+        return response(str_response);
     }
     void post(string url, map<string, string> params, int timeout)
     {
@@ -192,21 +193,22 @@ private:
             {
                 throw QYUtilException("recv error");
             }
-            response.append(m_buf, length);
+            str_response.append(m_buf, length);
             memset(m_buf, 0, LTcpBuf);
         }while(length == LTcpBuf);
-        cout << response << "---------------------------------------" << endl;
-        _qyinfo(response);
+
+        //split_string(response, string(HTTP_HEADER_EOF), result);
+        _qyinfo(str_response);
         return 0;
     }
     void parse_req_header()
     {
-        size_t eof_pos = response.find("\r\n\r\n");
+        size_t eof_pos = str_response.find("\r\n\r\n");
         if(eof_pos == string::npos)
         {
             throw QYUtilException("bad response");
         }
-        string header = response.substr(0, eof_pos);
+        string header = str_response.substr(0, eof_pos);
         _qyinfo(header, header.length());
     }
 public:
@@ -219,9 +221,7 @@ private:
     list<string> ips;
     short port;
     char *m_buf;
-    string response;
+    string str_response;
 };
-
 };
-
 #endif

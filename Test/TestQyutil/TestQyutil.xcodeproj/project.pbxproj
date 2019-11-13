@@ -16,6 +16,9 @@
 		3379EC5A22C4634D00D2EE2E /* qyutil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3379EC5922C4634D00D2EE2E /* qyutil.cpp */; };
 		33B22C6C235E9E5100852CD0 /* request.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33B22C6B235E9E5100852CD0 /* request.cpp */; };
 		33B91E5322C9DC240027208F /* net_common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33B91E5222C9DC240027208F /* net_common.cpp */; };
+		33C63568237BA3D300D19D07 /* Semaphore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33C63567237BA3D300D19D07 /* Semaphore.cpp */; };
+		33C6356A237BA6B700D19D07 /* global_func.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33C63569237BA6B700D19D07 /* global_func.cpp */; };
+		33C6356D237BB15300D19D07 /* response.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33C6356C237BB15300D19D07 /* response.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,9 +43,13 @@
 		3343EBA422C312E5000C12FA /* qyLogMgr.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = qyLogMgr.cpp; path = ../../common/qylog/qyLogMgr.cpp; sourceTree = "<group>"; };
 		3379EC5922C4634D00D2EE2E /* qyutil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qyutil.cpp; path = ../../src/qyutil.cpp; sourceTree = "<group>"; };
 		3379EC5D22C46D1800D2EE2E /* tracerouter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = tracerouter.hpp; path = ../../src/tracerouter/tracerouter.hpp; sourceTree = "<group>"; };
+		337E2286237A8EE60084A8DD /* Pingback.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = Pingback.hpp; path = ../../include/Pingback.hpp; sourceTree = "<group>"; };
 		33B22C69235DF40600852CD0 /* request.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = request.hpp; path = ../../src/http/request.hpp; sourceTree = "<group>"; };
 		33B22C6B235E9E5100852CD0 /* request.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = request.cpp; path = ../../src/http/request.cpp; sourceTree = "<group>"; };
 		33B91E5222C9DC240027208F /* net_common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = net_common.cpp; path = ../../common/net_common/net_common.cpp; sourceTree = "<group>"; };
+		33C63567237BA3D300D19D07 /* Semaphore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Semaphore.cpp; path = ../../src/Semaphore.cpp; sourceTree = "<group>"; };
+		33C63569237BA6B700D19D07 /* global_func.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = global_func.cpp; path = ../../src/global_func.cpp; sourceTree = "<group>"; };
+		33C6356C237BB15300D19D07 /* response.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = response.cpp; path = ../../src/http/response.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,9 +73,13 @@
 				3379EC5D22C46D1800D2EE2E /* tracerouter.hpp */,
 				33B22C69235DF40600852CD0 /* request.hpp */,
 				33B22C6B235E9E5100852CD0 /* request.cpp */,
+				33C6356C237BB15300D19D07 /* response.cpp */,
 				3343EBA222C312E5000C12FA /* QYLogger.cpp */,
 				3343EBA422C312E5000C12FA /* qyLogMgr.cpp */,
 				3379EC5922C4634D00D2EE2E /* qyutil.cpp */,
+				337E2286237A8EE60084A8DD /* Pingback.hpp */,
+				33C63567237BA3D300D19D07 /* Semaphore.cpp */,
+				33C63569237BA6B700D19D07 /* global_func.cpp */,
 				3343EB9622C312AA000C12FA /* TestQyutil */,
 				3343EB9522C312AA000C12FA /* Products */,
 			);
@@ -146,6 +157,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33C6356D237BB15300D19D07 /* response.cpp in Sources */,
 				3379EC5A22C4634D00D2EE2E /* qyutil.cpp in Sources */,
 				3343EBA522C312E5000C12FA /* pinger.hpp in Sources */,
 				3343EBA722C312E5000C12FA /* oc_wrapper.cpp in Sources */,
@@ -154,6 +166,8 @@
 				3343EBAB22C312E5000C12FA /* qyLogMgr.cpp in Sources */,
 				33B91E5322C9DC240027208F /* net_common.cpp in Sources */,
 				33B22C6C235E9E5100852CD0 /* request.cpp in Sources */,
+				33C6356A237BA6B700D19D07 /* global_func.cpp in Sources */,
+				33C63568237BA3D300D19D07 /* Semaphore.cpp in Sources */,
 				3343EB9822C312AA000C12FA /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

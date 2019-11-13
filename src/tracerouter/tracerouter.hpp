@@ -219,7 +219,9 @@ public:
                 ipv4_header ipv4_hdr;
                 icmp_header icmp_hdr;
                 stream >> ipv4_hdr >> icmp_hdr;
-                string cur_ip = ipv4_hdr.source_address().to_string();
+                stringstream ss;
+                ss << ipv4_hdr.source_address();
+                string cur_ip = ss.str();
                 if(t_ip == cur_ip)
                 {
                     

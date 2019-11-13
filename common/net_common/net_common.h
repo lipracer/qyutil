@@ -22,6 +22,9 @@ typedef unsigned int   u32;
 typedef long long int  int64;
 typedef unsigned long long int u64;
 
+
+#define HTTP_HEADER_EOF ("\r\n")
+
 namespace NetCommon
 {
 enum class TraceRouterType : char

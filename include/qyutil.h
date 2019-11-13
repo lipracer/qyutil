@@ -70,7 +70,7 @@ public:
     {
         lock_guard<mutex> tMtx(__cvmtx);
         __msg_queue.push_back(task);
-        __cvar.notify_one();
+        __cvar.notify_all();
     }
 private:
     shared_ptr<std::thread>  __th[nThread];

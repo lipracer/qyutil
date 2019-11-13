@@ -47,29 +47,26 @@
 #include "cmdline.h"
 #include <future>
 #include "../src/http/request.hpp"
+#include "Pingback.hpp"
+#include "global_func.h"
 
 using namespace std;
 using namespace qyutil;
 
-void Break()
-{
-    std::this_thread::sleep_for(chrono::milliseconds(10000));
-    int fds[2];
-    pipe(fds);
-    cout << "write break\n";
-    write(fds[1], "1", 1);
-}
 
 int main(int argc, char * argv[])
 {
+    //inq_list_test();
+    
+    init_qyutil("", "http://msg.qy.net/v5/alt/act", 0);
+    
     map<string, string> params;
     try
     {
-        for(int i = 0; i < 20; ++i)
-        {
-            Request request;
-            request.get("http://www.baidu.com", params, 1000LL);
-        }
+
+        Request request;
+        request.get("http://www.baidu.com", params, 1000LL);
+        
     }
     catch (std::exception &e)
     {

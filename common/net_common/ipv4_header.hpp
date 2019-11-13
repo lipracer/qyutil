@@ -12,8 +12,8 @@
 #define IPV4_HEADER_HPP
 
 #include <algorithm>
-#include <asio/ip/address_v4.hpp>
-using namespace asio;
+//#include <asio/ip/address_v4.hpp>
+//using namespace asio;
 
 // Packet header for IPv4.
 //
@@ -66,19 +66,22 @@ public:
   unsigned char protocol() const { return rep_[9]; }
   unsigned short header_checksum() const { return decode(10, 11); }
 
-  asio::ip::address_v4 source_address() const
+  int source_address() const
   {
-    asio::ip::address_v4::bytes_type bytes
-      = { { rep_[12], rep_[13], rep_[14], rep_[15] } };
-    return asio::ip::address_v4(bytes);
+//    asio::ip::address_v4::bytes_type bytes
+//      = { { rep_[12], rep_[13], rep_[14], rep_[15] } };
+//    return asio::ip::address_v4(bytes);
+      unsigned char array_ip[4] = { rep_[12], rep_[13], rep_[14], rep_[15] };
+      return *((int *)array_ip);
+      
   }
-
-  asio::ip::address_v4 destination_address() const
-  {
-    asio::ip::address_v4::bytes_type bytes
-      = { { rep_[16], rep_[17], rep_[18], rep_[19] } };
-    return asio::ip::address_v4(bytes);
-  }
+//
+//  asio::ip::address_v4 destination_address() const
+//  {
+//    asio::ip::address_v4::bytes_type bytes
+//      = { { rep_[16], rep_[17], rep_[18], rep_[19] } };
+//    return asio::ip::address_v4(bytes);
+//  }
 
   friend std::istream& operator>>(std::istream& is, ipv4_header& header)
   {
