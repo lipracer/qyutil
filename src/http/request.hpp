@@ -43,7 +43,7 @@ public:
         delete [] m_buf;
         _qyinfo("destruct request");
     }
-    response get(string url, map<string, string> params, int timeout)
+    void get(string url, map<string, string> params, int timeout)
     {
         this->timeout = timeout;
         parse_url(url);
@@ -62,7 +62,7 @@ public:
                 parse_req_header();
             }
         }
-        return response(str_response);
+        //return response(str_response);
     }
     void post(string url, map<string, string> params, int timeout)
     {
@@ -74,10 +74,10 @@ private:
     {
         socket_ipinfo_t info;
         info.size = 0;
-#ifdef __APPLE__
+#if 0
         int result = socket_gethostbyname(domain.c_str(),&info, timeout, "10.16.169.127");
 #else
-        int result = socket_gethostbyname(domain.c_str(),&info, timeout, nullptr);
+        int result = socket_gethostbyname(domain.c_str(),&info, timeout, "8.8.8.8");
 #endif
         for(int i = 0; i < info.size; ++i)
         {
@@ -149,7 +149,8 @@ private:
         header << method_name[method];
         header << " /";
         header << " HTTP/" << Request::version();
-        header << HTTP_HEADER_EOF;
+        header << HTTP_HEADER_BREAK;
+        header << "method:" << method_name[method] << HTTP_HEADER_BREAK;
         header << HTTP_HEADER_EOF;
     }
     int send_data()
@@ -179,7 +180,7 @@ private:
     }
     void parse_req_header()
     {
-        size_t eof_pos = str_response.find("\r\n\r\n");
+        size_t eof_pos = str_response.find(HTTP_HEADER_EOF);
         if(eof_pos == string::npos)
         {
             throw QYUtilException("bad response");

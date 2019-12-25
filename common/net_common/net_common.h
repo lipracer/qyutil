@@ -23,11 +23,12 @@ typedef unsigned int   u32;
 typedef long long int  int64;
 typedef unsigned long long int u64;
 
-
-#define HTTP_HEADER_EOF ("\r\n")
-
 namespace NetCommon
 {
+const string HTTP_HEADER_BREAK = "\r\n";
+const string HTTP_HEADER_EOF = "\r\n\r\n";
+const string HTTP_KET_CONTENT_LENGTH = "Content-length";
+
 enum class TraceRouterType : char
 {
     UDP = 17,
@@ -75,7 +76,9 @@ struct PROP_IP_HEADER
     }
     static const size_t Length = 20;
 };
+
 static_assert(sizeof(PROP_IP_HEADER) == PROP_IP_HEADER::Length, "PROP_IP_HEADER length error!!!");
+//static_assert(std::is_pod<PROP_IP_HEADER>::value, "PROP_IP_HEADER is not pod type");
 
 //UDP 协议头
 struct alignas(2) UDP_HAEDER
@@ -87,7 +90,9 @@ struct alignas(2) UDP_HAEDER
     UDP_HAEDER() : udp_len(UDP_HAEDER::Length){}   
     static const size_t Length = 8; 
 };
+
 static_assert(sizeof(UDP_HAEDER) == UDP_HAEDER::Length, "UDP_HAEDER length error!!!");
+//static_assert(std::is_pod<UDP_HAEDER>::value, "UDP_HAEDER is not pod type");
 
 typedef int RawSocket;
 
@@ -149,7 +154,7 @@ struct QYErrorInfo_
         error_code = nerr;
         if(msg_)
         {
-            int size = strlen(msg_) >= NetCommon::MAX_MSG_BUF ? NetCommon::MAX_MSG_BUF-1 : strlen(msg_);
+            size_t size = strlen(msg_) >= NetCommon::MAX_MSG_BUF ? NetCommon::MAX_MSG_BUF-1 : strlen(msg_);
             strncpy(msg, msg_, size);
         }
         else

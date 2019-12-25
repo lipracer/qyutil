@@ -5,3 +5,9 @@
 #include <errno.h>
 #include <arpa/inet.h>
 
+namespace qyutil
+{
+//template <bool async>
+
+}
+
