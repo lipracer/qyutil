@@ -56,19 +56,21 @@ inline string strip(const string& str)
     return rstrip(result);
 }
 
-template<typename Stream>
-class response : BaseResponse
+class response : public BaseResponse
 {
 public:
-    response(string& body);
+    response(shared_ptr<TcpSocketStream> stream, int timeout) : BaseResponse(stream, timeout)
+    {
+
+    }
     int status_code()
     {
         return m_status_code;
     }
-    int parse_header()
+    void parse_header()
     {
         vector<string> headers;
-        split_string(m_header, headers);
+        split_string(m_header, HTTP_HEADER_BREAK, headers);
         for(auto & it : headers)
         {
             if(string::npos !=  it.find(':'))
@@ -80,6 +82,7 @@ public:
                 }
             }
         }
+        get_content_length();
     }
     pair<string, string> parse_http_line(string& line)
     {
@@ -102,6 +105,7 @@ public:
                 result.second = value;
             }
         }
+        return result;
     }
 private:
     int m_status_code;

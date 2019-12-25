@@ -45,6 +45,7 @@ public:
     }
     void get(string url, map<string, string> params, int timeout)
     {
+        response response(stream, timeout);
         this->timeout = timeout;
         parse_url(url);
         build_req_header(url, 0, params);
@@ -59,7 +60,16 @@ public:
             if(first != ips.end())
             {
                 send_data();
-                parse_req_header();
+                response.get_header();
+                response.parse_header();
+                
+                stringstream ss;
+                while(EOF !=  response.get_boday(ss))
+                {
+                    //cout << ss.tellp() << endl;
+                }
+                cout << ss.str() << endl;
+ 
             }
         }
         //return response(str_response);
@@ -151,42 +161,21 @@ private:
         header << " HTTP/" << Request::version();
         header << HTTP_HEADER_BREAK;
         header << "method:" << method_name[method] << HTTP_HEADER_BREAK;
+        header << "Connection: keep-alive" << HTTP_HEADER_BREAK;
+        header << "User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Mobile Safari/537.36" << HTTP_HEADER_BREAK;
         header << HTTP_HEADER_EOF;
     }
     int send_data()
     {
         size_t length = header.str().length();
-        if(StreamError::ok != stream->write(header.str().c_str(), length, timeout))
+        if(0 >= stream->write(header.str().c_str(), length, timeout))
         {
             throw QYUtilException("send error");
         }
         
         memset(m_buf, 0, LTcpBuf);
         length = LTcpBuf - 1;
-        
-        do
-        {
-            if(StreamError::ok != stream->read(m_buf, length, timeout))
-            {
-                throw QYUtilException("recv error");
-            }
-            str_response.append(m_buf, length);
-            memset(m_buf, 0, LTcpBuf);
-        }while(length == LTcpBuf);
-
-        //split_string(response, string(HTTP_HEADER_EOF), result);
-        _qyinfo(str_response);
         return 0;
-    }
-    void parse_req_header()
-    {
-        size_t eof_pos = str_response.find(HTTP_HEADER_EOF);
-        if(eof_pos == string::npos)
-        {
-            throw QYUtilException("bad response");
-        }
-        string header = str_response.substr(0, eof_pos);
-        _qyinfo(header, header.length());
     }
 public:
     

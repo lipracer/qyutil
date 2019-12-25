@@ -78,7 +78,7 @@ public:
 class BaseResponse
 {
 public:
-    BaseResponse() : m_header(ReadBufLength, 0)
+    BaseResponse(shared_ptr<TcpSocketStream> stream, int timeout) : m_header(ReadBufLength, 0), m_socket_stream(stream), m_timeout(timeout)
     {
         m_buf = new char[ReadBufLength];
         m_boday = new char[ReadBufLength];
@@ -86,6 +86,7 @@ public:
     ~BaseResponse()
     {
         delete [] m_buf;
+        delete [] m_boday;
     }
     int get_header()
     {
@@ -106,9 +107,9 @@ public:
             memcpy(const_cast<char*>(m_header.data() + m_read_length), m_buf, cur_read_count);
             m_read_length += cur_read_count;
 
-            string::npos == m_header.find(HTTP_HEADER_EOF);
+            eof_pos = m_header.find(HTTP_HEADER_EOF);
 
-        } while(string::npos != eof_pos);
+        } while(string::npos == eof_pos);
 
         eof_pos += HTTP_HEADER_EOF.size();
         size_t recv_str_length = strlen(m_header.c_str());
@@ -124,6 +125,7 @@ public:
             m_header.resize(eof_pos);
         }
         m_is_has_some_body = m_read_length > m_header.size();
+        cout << m_header << endl;
         return 0;
     }
     int get_boday(ostream& os)
@@ -133,21 +135,22 @@ public:
             m_is_has_some_body = false;
             size_t remain_count = m_read_length - m_header.size();
             os.write(m_boday, remain_count);
-            return remain_count;
+            return (int)remain_count;
         }
         else
         {
             memset(m_buf, 0, ReadBufLength);
-            int cur_length = m_socket_stream->write(m_buf, ReadBufLength, m_timeout);
+            int cur_length = (int)m_socket_stream->read(m_buf, ReadBufLength, m_timeout);
             if(cur_length <= 0)
             {
-                return StreamError::read_error;
+                return EOF;
             }
             os.write(m_buf, cur_length);
             m_read_length += cur_length;
 
         }
-        if(m_read_length == m_content_length)
+        cout << "read:" << m_read_length << " diff:"<< m_read_length - m_header.size() << " c_length:" << m_content_length << endl;
+        if(m_read_length - m_header.size() >= m_content_length)
         {
             return EOF;
         }
@@ -161,8 +164,7 @@ public:
     {
         return m_boday;
     }
-private:
-    void get_content_length()
+    virtual void get_content_length()
     {
         size_t pos_s = string::npos;
         pos_s = m_header.find(HTTP_KET_CONTENT_LENGTH);
@@ -174,8 +176,11 @@ private:
             size_t pos = str_length.find(':');
             if(pos != string::npos)
             {
-                str_length = str_length.substr(pos);
-                m_content_length = stoul(str_length);
+                str_length = str_length.substr(pos + 1);
+                stringstream ss;
+                ss << str_length;
+                
+                ss >> m_content_length;
             }
         }
     }
@@ -192,7 +197,7 @@ private:
     size_t m_read_length = 0;
     bool m_is_has_some_body = false;
 
-    size_t m_content_length = -1;
+    size_t m_content_length = 0;
 };
 
 }

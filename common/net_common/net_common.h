@@ -27,7 +27,7 @@ namespace NetCommon
 {
 const string HTTP_HEADER_BREAK = "\r\n";
 const string HTTP_HEADER_EOF = "\r\n\r\n";
-const string HTTP_KET_CONTENT_LENGTH = "Content-length";
+const string HTTP_KET_CONTENT_LENGTH = "Content-Length";
 
 enum class TraceRouterType : char
 {
