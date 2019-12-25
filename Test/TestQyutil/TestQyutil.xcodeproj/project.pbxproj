@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		3343EB9822C312AA000C12FA /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EB9722C312AA000C12FA /* main.cpp */; };
 		3343EBA522C312E5000C12FA /* pinger.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EB9E22C312E5000C12FA /* pinger.hpp */; };
-		3343EBA722C312E5000C12FA /* oc_wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA022C312E5000C12FA /* oc_wrapper.cpp */; };
 		3343EBA822C312E5000C12FA /* dnsquery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA122C312E5000C12FA /* dnsquery.cpp */; };
 		3343EBA922C312E5000C12FA /* QYLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA222C312E5000C12FA /* QYLogger.cpp */; };
 		3343EBAB22C312E5000C12FA /* qyLogMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3343EBA422C312E5000C12FA /* qyLogMgr.cpp */; };
@@ -37,7 +36,6 @@
 		3343EB9422C312AA000C12FA /* TestQyutil */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestQyutil; sourceTree = BUILT_PRODUCTS_DIR; };
 		3343EB9722C312AA000C12FA /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		3343EB9E22C312E5000C12FA /* pinger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = pinger.hpp; path = ../../src/ping/pinger.hpp; sourceTree = "<group>"; };
-		3343EBA022C312E5000C12FA /* oc_wrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = oc_wrapper.cpp; path = ../../src/oc/oc_wrapper.cpp; sourceTree = "<group>"; };
 		3343EBA122C312E5000C12FA /* dnsquery.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = dnsquery.cpp; path = ../../src/dnsquery/dnsquery.cpp; sourceTree = "<group>"; };
 		3343EBA222C312E5000C12FA /* QYLogger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = QYLogger.cpp; path = ../../common/qylog/QYLogger.cpp; sourceTree = "<group>"; };
 		3343EBA422C312E5000C12FA /* qyLogMgr.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = qyLogMgr.cpp; path = ../../common/qylog/qyLogMgr.cpp; sourceTree = "<group>"; };
@@ -68,7 +66,6 @@
 			children = (
 				33B91E5222C9DC240027208F /* net_common.cpp */,
 				3343EBA122C312E5000C12FA /* dnsquery.cpp */,
-				3343EBA022C312E5000C12FA /* oc_wrapper.cpp */,
 				3343EB9E22C312E5000C12FA /* pinger.hpp */,
 				3379EC5D22C46D1800D2EE2E /* tracerouter.hpp */,
 				33B22C69235DF40600852CD0 /* request.hpp */,
@@ -160,7 +157,6 @@
 				33C6356D237BB15300D19D07 /* response.cpp in Sources */,
 				3379EC5A22C4634D00D2EE2E /* qyutil.cpp in Sources */,
 				3343EBA522C312E5000C12FA /* pinger.hpp in Sources */,
-				3343EBA722C312E5000C12FA /* oc_wrapper.cpp in Sources */,
 				3343EBA822C312E5000C12FA /* dnsquery.cpp in Sources */,
 				3343EBA922C312E5000C12FA /* QYLogger.cpp in Sources */,
 				3343EBAB22C312E5000C12FA /* qyLogMgr.cpp in Sources */,

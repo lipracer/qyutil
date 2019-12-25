@@ -12,6 +12,7 @@
 #include "qylog.h"
 #include "qyutil.h"
 #include "../dnsquery/dnsquery.h"
+#include "SocketStream.hpp"
 
 //#define _qyinfo
 
@@ -20,36 +21,7 @@ namespace qyutil
 using namespace std;
 using namespace NetCommon;
 
-enum StreamError : int
-{
-    ok = 0,
-    sock_invalid,
-    connect_error,
-    send_error,
-    read_error,
-};
-
 const size_t LTcpBuf = 1024 + 1;
-
-class SocketStream
-{
-public:
-    virtual StreamError open(string ip, short port, int timeout) = 0;
-    virtual StreamError close() = 0;
-    virtual StreamError read(const char *buf, size_t& length, int timeout) = 0;
-    virtual StreamError write(const char *buf, size_t& length, int timeout) = 0;
-};
-
-class TcpSocketStream : public SocketStream
-{
-public:
-    StreamError open(string ip, short port, int timeout) override;
-    StreamError close() override;
-    StreamError read(const char *buf, size_t& length, int timeout) override;
-    StreamError write(const char *buf, size_t& length, int timeout) override;
-private:
-    RawSocket hsocket;
-};
 
 class Request
 {
@@ -102,7 +74,11 @@ private:
     {
         socket_ipinfo_t info;
         info.size = 0;
+#ifdef __APPLE__
         int result = socket_gethostbyname(domain.c_str(),&info, timeout, "10.16.169.127");
+#else
+        int result = socket_gethostbyname(domain.c_str(),&info, timeout, nullptr);
+#endif
         for(int i = 0; i < info.size; ++i)
         {
             ips.push_back(info.ip[i]);
@@ -214,7 +190,7 @@ private:
 public:
     
 private:
-    shared_ptr<SocketStream> stream;
+    shared_ptr<TcpSocketStream> stream;
     stringstream header;
     int code;
     int timeout;

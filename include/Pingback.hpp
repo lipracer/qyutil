@@ -10,6 +10,7 @@ namespace qyutil
 using namespace std;
 
 using ss_pair = pair<string, string>;
+using pb_params = list<ss_pair>;
 
 class Pingback
 {
@@ -24,6 +25,11 @@ public:
     void init_public_params(list<ss_pair>& params)
     {
         std::copy(params.begin(), params.end(), public_params.begin());
+    }
+    
+    void send(pb_params& pb_params)
+    {
+        
     }
 
 private:

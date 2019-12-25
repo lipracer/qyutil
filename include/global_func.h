@@ -1,47 +1,68 @@
 #ifndef __GLOBAL_FUNC_H__
 #define __GLOBAL_FUNC_H__
 
-#include <string>
-#include <vector>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct _inq_node
+struct PingbackParam
 {
-    void * data;
-    _inq_node * next;
-    
-} inq_node;
+    char * pf;
+    char * p;
+    char * p1;
+    char * u;
+    char * pu;
+    char * v;
+    char * os;
+    char * brand;
+    char * ua;
+    char * ntwk;
+    char * adplt;
+    char * adcrid;
+    char * mkey;
+};
 
-typedef inq_node * inq_list;
+void init_qyutil(char * workpath, char * pingback_url, struct PingbackParam * params);
 
-void list_init(inq_list * list, void * data);
-void list_insert_node(inq_node *node, void * data);
-void list_rem_node(inq_node * node);
-void list_destroy(inq_list list);
+#define MAX_IP_BUF_LEN (16)
 
-void inq_list_test();
-
-typedef struct _inq_str_pair
+struct OC_PingStatus
 {
-    char * key;
-    char * value;
-} inq_str_pair;
+    double loss_rate;
+    double minrtt;  // ms
+    double avgrtt;  // ms
+    double maxrtt;  // ms
+    char ip[MAX_IP_BUF_LEN];
+};
 
-void init_qyutil(char * workpath, char * pingback_url, int params_count, ...);
+typedef void(*AsynCB)(bool, const char*);
+typedef void(*PingCallback)(const struct OC_PingStatus *status, int code, const char *msg);
+
+void ZeroPingStatus(struct OC_PingStatus *status);
+
+void OC_NetworkDiagnosis(const char* host, const char* dnsSer, PingCallback cb);
+
+int NativeGetHostNameByServer(const char* HostName, int timeout, const char* dnsServer, char* ipList);
+
+//sync call
+int NativePing(const char* host, int times, int package_size, int interval/*S*/, int timeout/*S*/, char* result);
+
+//sync call
+int NativeTraceRouter(const char* host, char* result);
+
+
+
+int AsyncNativeGetHostNameByServer(const char* HostName, int timeout, const char* dnsServer, AsynCB cb);
+
+//sync call
+int AsyncNativePing(const char* host, int times, int package_size, int interval/*S*/, int timeout/*S*/, AsynCB cb);
+
+//sync call
+int AsyncNativeTraceRouter(const char* host, AsynCB cb);
 
 #ifdef __cplusplus
 }
 #endif
-
-namespace qyutil
-{
-using namespace std;
-void split_string(const string& str, const string target, vector<string>& result);
-
-}
 
 
 #endif

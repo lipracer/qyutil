@@ -49,6 +49,7 @@
 #include "../src/http/request.hpp"
 #include "Pingback.hpp"
 #include "global_func.h"
+#include "Semaphore.hpp"
 
 using namespace std;
 using namespace qyutil;
@@ -57,8 +58,9 @@ using namespace qyutil;
 int main(int argc, char * argv[])
 {
     //inq_list_test();
-    
-    init_qyutil("", "http://msg.qy.net/v5/alt/act", 0);
+    struct PingbackParam pb;
+    memset(&pb, 0, sizeof(pb));
+    init_qyutil("", "http://msg.qy.net/v5/alt/act", &pb);
     
     map<string, string> params;
     try
@@ -72,6 +74,6 @@ int main(int argc, char * argv[])
     {
         _qyerro(e.what());
     }
-    
+
     return 0;
 }

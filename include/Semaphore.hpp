@@ -3,6 +3,9 @@
 
 #include <thread>
 #include <atomic>
+#include <condition_variable>
+#include <mutex>
+//#include <recursive_mutex>
 
 namespace qyutil
 {
@@ -14,11 +17,15 @@ public:
     virtual ~Semaphore();
     
     virtual void wait();
+    virtual void post();
 private:
 public:
 private:
-    atomic<int> m_count;
+    int m_count;
 };
+
+void semaphore_test();
+
 
 }
 

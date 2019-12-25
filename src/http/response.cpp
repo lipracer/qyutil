@@ -2,8 +2,13 @@
 #include "global_func.h"
 #include "net_common/net_common.h"
 
+#include <string>
+#include <vector>
+
 namespace qyutil
 {
+
+extern void split_string(const string& str, const string target, vector<string>& result);
 
 response::response(string& boday) : m_response_boday(boday)
 {
